@@ -41,7 +41,8 @@ app.get('/api/businesses', async (req, res) => {
   try {
     let query = `
       SELECT b.id, b.business_name, b.business_type, b.phone, b.email, b.city, b.state, b.rating, b.reviews, 
-      (SELECT stage FROM website_pipeline WHERE business_id = b.id ORDER BY stage_date DESC LIMIT 1) as current_stage
+      (SELECT stage FROM website_pipeline WHERE business_id = b.id ORDER BY stage_date DESC LIMIT 1) as current_stage,
+      b.scraped_data->'phone_type' as phone_type
       FROM businesses b
     `;
     

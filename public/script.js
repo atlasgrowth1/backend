@@ -91,10 +91,18 @@ function populateStageColumn(containerId, businesses) {
           <small>Phone: ${business.phone || 'N/A'}</small><br>
           <small>Rating: ${business.rating || 'N/A'} (${business.reviews || '0'} reviews)</small>
         </p>
-        <button class="btn btn-sm btn-primary" onclick="selectBusiness(${business.id})">View Details</button>
+        <button class="btn btn-sm btn-primary view-details-btn" data-business-id="${business.id}">View Details</button>
       </div>
     `;
     container.appendChild(card);
+  });
+  
+  // Add event listeners to all view details buttons in this container
+  container.querySelectorAll('.view-details-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const businessId = this.getAttribute('data-business-id');
+      selectBusiness(businessId);
+    });
   });
 }
 
@@ -102,9 +110,16 @@ async function selectBusiness(id) {
   currentBusinessId = id;
 
   try {
+    // Make sure modal element exists
+    const modalElement = document.getElementById('businessModal');
+    if (!modalElement) {
+      console.error('Business modal element not found');
+      return;
+    }
+
     // Initialize modal if not already done
     if (!businessModal) {
-      businessModal = new bootstrap.Modal(document.getElementById('businessModal'));
+      businessModal = new bootstrap.Modal(modalElement);
     }
 
     // Fetch business details
@@ -114,15 +129,45 @@ async function selectBusiness(id) {
     // Fetch pipeline data
     const pipelineResponse = await fetch(`/api/pipeline/${id}`);
     const pipeline = await pipelineResponse.json();
+    
+    // Ensure all DOM elements exist before trying to update them
+    const elements = {
+      businessName: document.getElementById('businessName'),
+      businessPhone: document.getElementById('businessPhone'),
+      businessEmail: document.getElementById('businessEmail'),
+      businessAddress: document.getElementById('businessAddress'),
+      businessRating: document.getElementById('businessRating'),
+      businessReviews: document.getElementById('businessReviews'),
+      businessPhoneType: document.getElementById('businessPhoneType')
+    };
+    
+    // Check if all elements exist
+    for (const [key, element] of Object.entries(elements)) {
+      if (!element) {
+        console.error(`Element '${key}' not found`);
+        return;
+      }
+    }
 
     // Update the UI with business details
-    document.getElementById('businessName').textContent = business.business_name;
-    document.getElementById('businessPhone').textContent = business.phone || 'Not available';
-    document.getElementById('businessEmail').textContent = business.email || 'Not available';
-    document.getElementById('businessAddress').textContent = business.full_address ||
+    elements.businessName.textContent = business.business_name;
+    elements.businessPhone.textContent = business.phone || 'Not available';
+    elements.businessEmail.textContent = business.email || 'Not available';
+    elements.businessAddress.textContent = business.full_address ||
       `${business.street || ''} ${business.city || ''}, ${business.state || ''} ${business.postal_code || ''}`;
-    document.getElementById('businessRating').textContent = business.rating || 'N/A';
-    document.getElementById('businessReviews').textContent = business.reviews || '0';
+    elements.businessRating.textContent = business.rating || 'N/A';
+    elements.businessReviews.textContent = business.reviews || '0';
+    
+    // Handle phone type if it exists (from scraped_data)
+    const phoneTypeElement = elements.businessPhoneType;
+    if (phoneTypeElement) {
+      try {
+        const phoneType = business.phone_type ? JSON.parse(business.phone_type) : null;
+        phoneTypeElement.textContent = phoneType || 'Not specified';
+      } catch (e) {
+        phoneTypeElement.textContent = business.phone_type || 'Not specified';
+      }
+    }
 
     // Display business hours
     const hoursContainer = document.getElementById('businessHours');
@@ -159,11 +204,12 @@ async function selectBusiness(id) {
         <div class="mt-3">
           <select id="pipelineStageSelect" class="form-select">
             <option value="">-- Select Next Stage --</option>
-            <option value="website sent" ${latestStage === 'website sent' ? 'disabled' : ''}>Website Sent</option>
-            <option value="website viewed" ${latestStage === 'website viewed' ? 'disabled' : ''}>Website Viewed</option>
+            <option value="website created" ${latestStage === 'website created' ? 'selected' : ''}>Website Created</option>
+            <option value="website sent" ${latestStage === 'website sent' ? 'selected' : ''}>Website Sent</option>
+            <option value="website viewed" ${latestStage === 'website viewed' ? 'selected' : ''}>Website Viewed</option>
           </select>
           <textarea id="pipelineNotes" class="form-control mt-2" placeholder="Notes (optional)"></textarea>
-          <button onclick="updatePipelineStage()" class="btn btn-primary mt-2">Update Stage</button>
+          <button id="updatePipelineBtn" class="btn btn-primary mt-2">Move to Selected Stage</button>
         </div>
         <div class="mt-3">
           <h6>Pipeline History</h6>
@@ -209,6 +255,14 @@ async function selectBusiness(id) {
 
     // Show the modal
     businessModal.show();
+    
+    // Add event listener for pipeline stage update button
+    const updatePipelineBtn = document.getElementById('updatePipelineBtn');
+    if (updatePipelineBtn) {
+      updatePipelineBtn.addEventListener('click', function() {
+        updatePipelineStage();
+      });
+    }
 
     // Set up view recording
     recordWebsiteView();
@@ -218,10 +272,20 @@ async function selectBusiness(id) {
 }
 
 async function updatePipelineStage() {
-  const stage = document.getElementById('pipelineStageSelect').value;
-  const notes = document.getElementById('pipelineNotes').value;
+  const stageSelect = document.getElementById('pipelineStageSelect');
+  if (!stageSelect) {
+    console.error('Pipeline stage select element not found');
+    return;
+  }
+  
+  const stage = stageSelect.value;
+  const notesElement = document.getElementById('pipelineNotes');
+  const notes = notesElement ? notesElement.value : '';
 
-  if (!stage) return;
+  if (!stage) {
+    alert('Please select a pipeline stage');
+    return;
+  }
 
   try {
     const response = await fetch(`/api/pipeline/${currentBusinessId}`, {
@@ -233,6 +297,9 @@ async function updatePipelineStage() {
     });
 
     if (response.ok) {
+      // Show success message
+      alert(`Successfully moved business to "${stage}" stage`);
+      
       // Refresh the business pipelines
       loadBusinessesByPipeline();
       
@@ -241,10 +308,13 @@ async function updatePipelineStage() {
         businessModal.hide();
       }
     } else {
-      console.error('Error updating pipeline stage:', response.statusText);
+      const errorData = await response.json();
+      console.error('Error updating pipeline stage:', errorData.error || response.statusText);
+      alert('Failed to update pipeline stage. See console for details.');
     }
   } catch (error) {
     console.error('Error updating pipeline stage:', error);
+    alert('Failed to update pipeline stage. See console for details.');
   }
 }
 
