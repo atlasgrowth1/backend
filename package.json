@@ -1,15 +1,24 @@
+
 {
-  "name": "nodejs",
+  "name": "business-database",
   "version": "1.0.0",
-  "description": "",
+  "description": "Business database for electricians",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "setup": "node setupDb.js",
+    "import": "node importData.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^18.0.6"
+    "@types/node": "^18.0.6",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "pg": "^8.11.0"
   }
 }
