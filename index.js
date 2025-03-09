@@ -14,6 +14,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // API Routes
+app.get('/api/debug', async (req, res) => {
+  try {
+    // Check if tables exist
+    const tablesResult = await db.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+    `);
+    
+    // Count records in businesses table
+    const countResult = await db.query('SELECT COUNT(*) FROM businesses');
+    
+    res.json({
+      tables: tablesResult.rows,
+      businessCount: countResult.rows[0].count,
+      databaseUrl: process.env.DATABASE_URL ? "Configured" : "Missing"
+    });
+  } catch (err) {
+    console.error('Database debug error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/businesses', async (req, res) => {
   try {
     const result = await db.query(
