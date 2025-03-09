@@ -1,31 +1,21 @@
+
 document.addEventListener('DOMContentLoaded', function() {
   loadStates();
-  loadBusinesses();
-
-  // Initially hide the business details
-  document.getElementById('businessDetails').style.display = 'none';
-  document.getElementById('noBusinessSelected').style.display = 'block';
+  loadBusinessesByPipeline();
 
   // Set up event listeners for filters
   document.getElementById('applyFilters').addEventListener('click', () => {
-    loadBusinesses();
+    loadBusinessesByPipeline();
   });
 
   document.getElementById('clearFilters').addEventListener('click', () => {
     document.getElementById('stateFilter').value = '';
-    document.getElementById('stageFilter').value = '';
-    loadBusinesses();
-  });
-
-  // Add automatic website view recording
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible' && currentBusinessId) {
-      recordWebsiteView();
-    }
+    loadBusinessesByPipeline();
   });
 });
 
 let currentBusinessId = null;
+let businessModal = null;
 
 async function loadStates() {
   try {
@@ -45,18 +35,16 @@ async function loadStates() {
   }
 }
 
-async function loadBusinesses() {
+async function loadBusinessesByPipeline() {
   try {
     // Get filter values
     const state = document.getElementById('stateFilter').value;
-    const stage = document.getElementById('stageFilter').value;
-
+    
     // Build query string
     let url = '/api/businesses';
     const params = [];
 
     if (state) params.push(`state=${encodeURIComponent(state)}`);
-    if (stage) params.push(`stage=${encodeURIComponent(stage)}`);
 
     if (params.length > 0) {
       url += '?' + params.join('&');
@@ -65,31 +53,60 @@ async function loadBusinesses() {
     const response = await fetch(url);
     const businesses = await response.json();
 
-    const businessTable = document.getElementById('businessTable');
-    businessTable.innerHTML = '';
+    // Clear all business containers
+    document.getElementById('websiteCreatedBusinesses').innerHTML = '';
+    document.getElementById('websiteSentBusinesses').innerHTML = '';
+    document.getElementById('websiteViewedBusinesses').innerHTML = '';
 
-    businesses.forEach(business => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${business.business_name}</td>
-        <td>${business.city || ''}, ${business.state || ''}</td>
-        <td>${business.rating || 'N/A'} (${business.reviews || '0'} reviews)</td>
-        <td>${business.current_stage || 'Not started'}</td>
-        <td>
-          <button class="btn btn-sm btn-primary" onclick="selectBusiness(${business.id})">View Details</button>
-        </td>
-      `;
-      businessTable.appendChild(row);
-    });
+    // Group businesses by pipeline stage
+    const createdBusinesses = businesses.filter(b => !b.current_stage || b.current_stage === 'website created');
+    const sentBusinesses = businesses.filter(b => b.current_stage === 'website sent');
+    const viewedBusinesses = businesses.filter(b => b.current_stage === 'website viewed');
+
+    // Populate each stage column
+    populateStageColumn('websiteCreatedBusinesses', createdBusinesses);
+    populateStageColumn('websiteSentBusinesses', sentBusinesses);
+    populateStageColumn('websiteViewedBusinesses', viewedBusinesses);
   } catch (error) {
     console.error('Error loading businesses:', error);
   }
+}
+
+function populateStageColumn(containerId, businesses) {
+  const container = document.getElementById(containerId);
+  
+  if (businesses.length === 0) {
+    container.innerHTML = '<p class="text-muted">No businesses in this stage</p>';
+    return;
+  }
+
+  businesses.forEach(business => {
+    const card = document.createElement('div');
+    card.className = 'card business-card';
+    card.innerHTML = `
+      <div class="card-body">
+        <h5 class="card-title">${business.business_name}</h5>
+        <p class="card-text">
+          <small>${business.city || ''}, ${business.state || ''}</small><br>
+          <small>Phone: ${business.phone || 'N/A'}</small><br>
+          <small>Rating: ${business.rating || 'N/A'} (${business.reviews || '0'} reviews)</small>
+        </p>
+        <button class="btn btn-sm btn-primary" onclick="selectBusiness(${business.id})">View Details</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
 }
 
 async function selectBusiness(id) {
   currentBusinessId = id;
 
   try {
+    // Initialize modal if not already done
+    if (!businessModal) {
+      businessModal = new bootstrap.Modal(document.getElementById('businessModal'));
+    }
+
     // Fetch business details
     const businessResponse = await fetch(`/api/businesses/${id}`);
     const business = await businessResponse.json();
@@ -190,16 +207,11 @@ async function selectBusiness(id) {
       socialContainer.textContent = 'No social links available';
     }
 
-    // Show the details tab
-    document.getElementById('businessDetails').style.display = 'block';
-    document.getElementById('noBusinessSelected').style.display = 'none';
+    // Show the modal
+    businessModal.show();
 
-    // Switch to details tab (assuming Bootstrap is used)
-    const detailsTab = document.getElementById('details-tab');
-    if (detailsTab) { // Check if detailsTab exists
-      const tabInstance = new bootstrap.Tab(detailsTab);
-      tabInstance.show();
-    }
+    // Set up view recording
+    recordWebsiteView();
   } catch (error) {
     console.error('Error fetching business details:', error);
   }
@@ -221,8 +233,13 @@ async function updatePipelineStage() {
     });
 
     if (response.ok) {
-      loadBusinesses(); // Refresh the business list
-      selectBusiness(currentBusinessId); // Refresh the business details
+      // Refresh the business pipelines
+      loadBusinessesByPipeline();
+      
+      // Close the modal
+      if (businessModal) {
+        businessModal.hide();
+      }
     } else {
       console.error('Error updating pipeline stage:', response.statusText);
     }
@@ -231,12 +248,11 @@ async function updatePipelineStage() {
   }
 }
 
-
 async function recordWebsiteView() {
   if (!currentBusinessId) return;
 
   try {
-    const response = await fetch(`/api/pipeline/${currentBusinessId}/view`, {
+    const response = await fetch(`/api/website-view/${currentBusinessId}`, {
       method: 'POST'
     });
     if (!response.ok) {
