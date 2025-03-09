@@ -80,6 +80,13 @@ async function importData() {
           delete scrapedData.description;
           delete scrapedData.working_hours;
 
+          // Parse numeric values properly
+          let reviews = null;
+          if (record.reviews) {
+            // Convert to integer by parsing and rounding
+            reviews = Math.round(parseFloat(record.reviews));
+          }
+          
           const values = [
             record.name || null,
             record.type || 'electrician',
@@ -91,10 +98,10 @@ async function importData() {
             record.state || null,
             record.postal_code || null,
             record.full_address || null,
-            record.latitude || null,
-            record.longitude || null,
-            record.rating || null,
-            record.reviews || null,
+            record.latitude ? parseFloat(record.latitude) : null,
+            record.longitude ? parseFloat(record.longitude) : null,
+            record.rating ? parseFloat(record.rating) : null,
+            reviews,
             record.description || null,
             JSON.stringify(workingHours),
             JSON.stringify(socialLinks),
