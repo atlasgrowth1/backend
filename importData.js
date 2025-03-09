@@ -3,16 +3,49 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const db = require('./db');
 const path = require('path');
+const { convertExcelToCSV } = require('./convertExcel');
 
 async function importData() {
-  const results = [];
-  const filePath = path.join(__dirname, 'attached_assets', 'Outscraper-20250307092319s54_electrician.csv');
+  // Convert Excel to CSV first
+  let convertedFilePath;
+  try {
+    convertedFilePath = convertExcelToCSV();
+    console.log('Successfully converted Excel to CSV');
+  } catch (err) {
+    console.error('Error converting Excel file:', err);
+  }
 
-  // Read and parse the CSV file
-  fs.createReadStream(filePath)
-    .pipe(csv())
-    .on('data', (data) => results.push(data))
-    .on('end', async () => {
+  const results = [];
+  const filePaths = [
+    path.join(__dirname, 'attached_assets', 'Outscraper-20250307092319s54_electrician.csv')
+  ];
+  
+  // Add the converted file if it exists
+  if (convertedFilePath) {
+    filePaths.push(convertedFilePath);
+  }
+
+  // Function to read and parse a CSV file
+  const readCsvFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+      const fileResults = [];
+      fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', (data) => fileResults.push(data))
+        .on('end', () => resolve(fileResults))
+        .on('error', (error) => reject(error));
+    });
+  };
+
+  // Read and parse all CSV files
+  try {
+    for (const filePath of filePaths) {
+      const fileResults = await readCsvFile(filePath);
+      console.log(`Processed ${fileResults.length} records from ${filePath}`);
+      results.push(...fileResults);
+    }
+    
+    console.log(`Total records to process: ${results.length}`);
       try {
         console.log(`Processing ${results.length} records...`);
 
@@ -117,7 +150,7 @@ async function importData() {
           await db.query(
             `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
              VALUES ($1, $2, $3, $4)`,
-            [businessId, 'basic_template', 'created', 'Initial pipeline entry']
+            [businessId, 'basic_template', 'website created', 'Initial pipeline entry']
           );
         }
 

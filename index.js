@@ -39,12 +39,107 @@ app.get('/api/debug', async (req, res) => {
 
 app.get('/api/businesses', async (req, res) => {
   try {
+    let query = `
+      SELECT b.id, b.business_name, b.business_type, b.phone, b.email, b.city, b.state, b.rating, b.reviews, 
+      (SELECT stage FROM website_pipeline WHERE business_id = b.id ORDER BY stage_date DESC LIMIT 1) as current_stage
+      FROM businesses b
+    `;
+    
+    // Add filtering logic
+    const params = [];
+    const conditions = [];
+    
+
+// Update pipeline stage
+app.post('/api/pipeline/:businessId', express.json(), async (req, res) => {
+  try {
+    const { businessId } = req.params;
+    const { stage, notes } = req.body;
+    
+    // Validate inputs
+    if (!stage) {
+      return res.status(400).json({ error: 'Stage is required' });
+    }
+    
+    // Insert new pipeline entry
     const result = await db.query(
-      'SELECT id, business_name, business_type, phone, email, city, state, rating, reviews FROM businesses ORDER BY business_name'
+      `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [businessId, 'basic_template', stage, notes || '']
     );
+    
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error updating pipeline:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Record website view (auto-update to "website viewed" stage)
+app.post('/api/website-view/:businessId', async (req, res) => {
+  try {
+    const { businessId } = req.params;
+    
+    // Check if already viewed
+    const checkResult = await db.query(
+      `SELECT id FROM website_pipeline 
+       WHERE business_id = $1 AND stage = 'website viewed'
+       LIMIT 1`,
+      [businessId]
+    );
+    
+    // Only add the entry if it doesn't exist
+    if (checkResult.rows.length === 0) {
+      await db.query(
+        `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
+         VALUES ($1, $2, $3, $4)`,
+        [businessId, 'basic_template', 'website viewed', 'Automatically recorded website view']
+      );
+    }
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error recording website view:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+    // Filter by state if provided
+    if (req.query.state) {
+      conditions.push(`LOWER(b.state) = LOWER($${params.length + 1})`);
+      params.push(req.query.state);
+    }
+    
+    // Filter by pipeline stage if provided
+    if (req.query.stage) {
+      conditions.push(`
+        (SELECT stage FROM website_pipeline WHERE business_id = b.id ORDER BY stage_date DESC LIMIT 1) = $${params.length + 1}
+      `);
+      params.push(req.query.stage);
+    }
+    
+    if (conditions.length > 0) {
+      query += ' WHERE ' + conditions.join(' AND ');
+    }
+    
+    query += ' ORDER BY b.business_name';
+    
+    const result = await db.query(query, params);
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching businesses:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get available states for filtering
+app.get('/api/states', async (req, res) => {
+  try {
+    const result = await db.query('SELECT DISTINCT state FROM businesses WHERE state IS NOT NULL ORDER BY state');
+    res.json(result.rows.map(row => row.state));
+  } catch (err) {
+    console.error('Error fetching states:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
