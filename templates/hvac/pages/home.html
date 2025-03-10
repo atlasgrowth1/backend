@@ -1,10 +1,9 @@
-
 <!-- Hero Section -->
-<section class="bg-hero-pattern text-white py-20 md:py-32">
+<section class="bg-hero-pattern home-hero text-white py-20 md:py-32">
   <div class="container mx-auto px-4">
     <div class="max-w-3xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">Expert HVAC Services in {{city}}, {{state}}</h1>
-      <p class="text-xl mb-8">Reliable heating, ventilation, and air conditioning solutions for residential and commercial properties.</p>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Expert HVAC Services You Can Trust</h1>
+      <p class="text-xl mb-8">Professional heating, ventilation, and air conditioning services in {{city}}, {{state}} and surrounding areas.</p>
       <div class="flex flex-col sm:flex-row justify-center gap-4">
         <a href="/hvacs/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-yellow-400 text-blue-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-300 transition">
           Request a Quote
@@ -17,294 +16,175 @@
   </div>
 </section>
 
-<!-- Services Section -->
-<section class="py-16">
+<!-- Rating Section -->
+<section class="py-12 bg-blue-50">
   <div class="container mx-auto px-4">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold mb-4">Our HVAC Services</h2>
-      <p class="text-xl text-gray-600 max-w-3xl mx-auto">From routine maintenance to emergency repairs, we provide comprehensive HVAC services to keep your environment comfortable year-round.</p>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Service 1 -->
-      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
-        <div class="text-blue-600 text-3xl mb-4">
-          <i class="fas fa-snowflake"></i>
+    <div class="flex flex-col md:flex-row justify-center items-center gap-8 text-center">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="text-yellow-400 text-2xl mb-2">
+          <!-- Star Rating -->
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
         </div>
-        <h3 class="font-bold text-xl mb-2">AC Installation & Repair</h3>
-        <p class="text-gray-600 mb-4">Expert installation, maintenance, and repair services for all types of air conditioning systems.</p>
-        <ul class="text-gray-600 space-y-2">
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Central air systems</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Ductless mini-splits</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Emergency repairs</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Preventive maintenance</li>
-        </ul>
+        <p class="font-bold text-xl">{{rating}} Rating</p>
+        <p class="text-gray-600">Based on {{reviews}} reviews</p>
       </div>
-      
-      <!-- Service 2 -->
-      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
-        <div class="text-blue-600 text-3xl mb-4">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="text-blue-600 text-2xl mb-2">
+          <i class="fas fa-certificate"></i>
+        </div>
+        <p class="font-bold text-xl">Licensed & Insured</p>
+        <p class="text-gray-600">Professional service guaranteed</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="text-blue-600 text-2xl mb-2">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <p class="font-bold text-xl">Fast Response</p>
+        <p class="text-gray-600">24/7 emergency service</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-16">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12">Our HVAC Services</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Heating Services -->
+      <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+        <div class="text-red-500 text-3xl mb-4">
           <i class="fas fa-fire"></i>
         </div>
-        <h3 class="font-bold text-xl mb-2">Heating Solutions</h3>
-        <p class="text-gray-600 mb-4">Comprehensive heating installation, repair, and maintenance services for optimal comfort.</p>
+        <h3 class="font-bold text-xl mb-2">Heating Services</h3>
+        <p class="text-gray-600 mb-4">Keep your home or business warm with our professional heating services.</p>
         <ul class="text-gray-600 space-y-2">
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Furnace installation</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Heat pump systems</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Boiler services</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>System diagnostics</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Furnace installation & repair</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Heat pump services</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Boiler maintenance</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Heating system tune-ups</li>
         </ul>
       </div>
-      
-      <!-- Service 3 -->
-      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
-        <div class="text-blue-600 text-3xl mb-4">
+
+      <!-- Cooling Services -->
+      <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+        <div class="text-blue-500 text-3xl mb-4">
+          <i class="fas fa-snowflake"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Cooling Services</h3>
+        <p class="text-gray-600 mb-4">Stay cool with our expert air conditioning installation and repair services.</p>
+        <ul class="text-gray-600 space-y-2">
+          <li><i class="fas fa-check text-green-500 mr-2"></i>AC installation & replacement</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>AC repair & maintenance</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Ductless mini-split systems</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Commercial cooling</li>
+        </ul>
+      </div>
+
+      <!-- Air Quality Services -->
+      <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+        <div class="text-green-500 text-3xl mb-4">
           <i class="fas fa-wind"></i>
         </div>
-        <h3 class="font-bold text-xl mb-2">Indoor Air Quality</h3>
-        <p class="text-gray-600 mb-4">Solutions to improve the air quality in your home or business for a healthier environment.</p>
+        <h3 class="font-bold text-xl mb-2">Air Quality Services</h3>
+        <p class="text-gray-600 mb-4">Breathe easier with our indoor air quality solutions.</p>
         <ul class="text-gray-600 space-y-2">
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Air purification</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Humidity control</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Ventilation systems</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Duct cleaning</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Air filtration systems</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Duct cleaning & repair</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Humidifiers & dehumidifiers</li>
+          <li><i class="fas fa-check text-green-500 mr-2"></i>Ventilation improvements</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- About Section -->
+<!-- Why Choose Us Section -->
 <section class="py-16 bg-gray-100">
   <div class="container mx-auto px-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <h2 class="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Left Column -->
       <div>
-        <h2 class="text-3xl font-bold mb-4">About {{businessName}}</h2>
-        <p class="text-gray-600 mb-4">With years of experience serving {{city}} and surrounding areas, {{businessName}} has established a reputation for excellence in the HVAC industry.</p>
-        <p class="text-gray-600 mb-4">Our team of certified technicians is committed to providing fast, reliable service and the highest quality workmanship for all your heating and cooling needs.</p>
-        <div class="flex items-center">
-          <div class="flex items-center text-yellow-500 mr-4">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
+        <div class="flex items-start mb-6">
+          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
+            <i class="fas fa-tools"></i>
           </div>
-          <span class="font-bold">{{rating}}/5 ({{reviews}} reviews)</span>
+          <div>
+            <h3 class="text-xl font-bold mb-2">Experienced Technicians</h3>
+            <p class="text-gray-600">Our team consists of certified professionals with years of experience in HVAC installation, maintenance, and repair.</p>
+          </div>
+        </div>
+        <div class="flex items-start mb-6">
+          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">Prompt Service</h3>
+            <p class="text-gray-600">We understand that HVAC issues can't wait. Our team responds quickly to all service calls.</p>
+          </div>
+        </div>
+        <div class="flex items-start">
+          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">Competitive Pricing</h3>
+            <p class="text-gray-600">Quality HVAC services at fair and transparent prices. We provide detailed estimates before starting any work.</p>
+          </div>
         </div>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h3 class="font-bold text-xl mb-4">Why Choose Us?</h3>
-        <ul class="space-y-4">
-          <li class="flex">
-            <div class="text-blue-600 mr-4">
-              <i class="fas fa-certificate text-2xl"></i>
-            </div>
-            <div>
-              <h4 class="font-bold">Licensed & Certified</h4>
-              <p class="text-gray-600">Our technicians are fully licensed, insured, and factory-trained.</p>
-            </div>
-          </li>
-          <li class="flex">
-            <div class="text-blue-600 mr-4">
-              <i class="fas fa-stopwatch text-2xl"></i>
-            </div>
-            <div>
-              <h4 class="font-bold">24/7 Emergency Service</h4>
-              <p class="text-gray-600">We're available around the clock for urgent HVAC issues.</p>
-            </div>
-          </li>
-          <li class="flex">
-            <div class="text-blue-600 mr-4">
-              <i class="fas fa-dollar-sign text-2xl"></i>
-            </div>
-            <div>
-              <h4 class="font-bold">Competitive Pricing</h4>
-              <p class="text-gray-600">Fair, transparent pricing with no hidden fees or surprises.</p>
-            </div>
-          </li>
-          <li class="flex">
-            <div class="text-blue-600 mr-4">
-              <i class="fas fa-thumbs-up text-2xl"></i>
-            </div>
-            <div>
-              <h4 class="font-bold">Satisfaction Guaranteed</h4>
-              <p class="text-gray-600">We stand behind our work with a 100% satisfaction guarantee.</p>
-            </div>
-          </li>
-        </ul>
+
+      <!-- Right Column -->
+      <div>
+        <div class="flex items-start mb-6">
+          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
+            <i class="fas fa-medal"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">Quality Equipment</h3>
+            <p class="text-gray-600">We use only high-quality, energy-efficient equipment and parts from trusted manufacturers.</p>
+          </div>
+        </div>
+        <div class="flex items-start mb-6">
+          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
+            <i class="fas fa-thumbs-up"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">Satisfaction Guaranteed</h3>
+            <p class="text-gray-600">Your satisfaction is our priority. We're not happy until you're happy with our service.</p>
+          </div>
+        </div>
+        <div class="flex items-start">
+          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
+            <i class="fas fa-home"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">Local Expertise</h3>
+            <p class="text-gray-600">As a local business, we understand the specific HVAC needs of homes and businesses in {{city}}.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Call to Action -->
-<section class="py-16 bg-blue-700 text-white">
+<section class="py-16 bg-blue-600 text-white">
   <div class="container mx-auto px-4 text-center">
     <h2 class="text-3xl font-bold mb-4">Ready to Experience Superior HVAC Service?</h2>
-    <p class="text-xl mb-8 max-w-3xl mx-auto">Contact us today for a free consultation and estimate on your heating or cooling project.</p>
+    <p class="text-xl mb-8 max-w-2xl mx-auto">Contact us today to schedule a service appointment or to request a free estimate for your heating and cooling needs.</p>
     <div class="flex flex-col sm:flex-row justify-center gap-4">
-      <a href="/hvac/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-yellow-400 text-blue-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-300 transition">
-        Request a Quote
+      <a href="/hvacs/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-white text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition">
+        Contact Us Today
       </a>
-      <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition">
+      <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-yellow-400 text-blue-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-300 transition">
         <i class="fas fa-phone-alt mr-2"></i>{{phone}}
       </a>
     </div>
   </div>
 </section>
-<!-- Hero Section -->
-<div class="hero text-center">
-  <div class="container">
-    <h1>Professional HVAC Services</h1>
-    <h2>{{businessName}}</h2>
-    <p class="lead">Keeping your home and business comfortable year-round</p>
-    <div class="mt-4">
-      <a href="tel:{{phone}}" class="btn btn-primary btn-lg me-2">Call Now: {{phone}}</a>
-      <a href="/hvac/{{businessKey}}/contact" class="btn btn-outline-light btn-lg">Free Estimate</a>
-    </div>
-  </div>
-</div>
-
-<!-- Services Section -->
-<div class="container">
-  <div class="text-center mb-5">
-    <h2>Our HVAC Services</h2>
-    <p class="lead">Quality heating, cooling and ventilation services for residential and commercial clients</p>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-4">
-      <div class="card service-card">
-        <div class="card-body">
-          <h5 class="card-title">Heating Services</h5>
-          <p class="card-text">We offer installation, repair, and maintenance services for all types of heating systems, including furnaces, heat pumps, and boilers.</p>
-          <ul>
-            <li>Furnace Installation & Repair</li>
-            <li>Heat Pump Services</li>
-            <li>Boiler Installation & Repair</li>
-            <li>Heating Maintenance</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-lg-4">
-      <div class="card service-card">
-        <div class="card-body">
-          <h5 class="card-title">Cooling Services</h5>
-          <p class="card-text">Keep your home or business cool and comfortable during the hot summer months with our complete air conditioning services.</p>
-          <ul>
-            <li>AC Installation & Replacement</li>
-            <li>AC Repair & Maintenance</li>
-            <li>Ductless Mini-Split Systems</li>
-            <li>Emergency AC Repairs</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-lg-4">
-      <div class="card service-card">
-        <div class="card-body">
-          <h5 class="card-title">Indoor Air Quality</h5>
-          <p class="card-text">Improve the air quality in your home or business with our comprehensive indoor air quality solutions.</p>
-          <ul>
-            <li>Air Filtration Systems</li>
-            <li>Humidifiers & Dehumidifiers</li>
-            <li>Duct Cleaning Services</li>
-            <li>Ventilation Improvements</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Why Choose Us Section -->
-<div class="cta-section">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6">
-        <h2>Why Choose {{businessName}}</h2>
-        <ul class="list-unstyled">
-          <li>✓ {{reviews}}+ Satisfied Customers</li>
-          <li>✓ {{rating}} Star Rating</li>
-          <li>✓ Licensed & Insured Technicians</li>
-          <li>✓ Emergency 24/7 Service Available</li>
-          <li>✓ Competitive, Upfront Pricing</li>
-          <li>✓ Serving {{city}} and Surrounding Areas</li>
-        </ul>
-        <a href="tel:{{phone}}" class="btn btn-primary">Call Now: {{phone}}</a>
-      </div>
-      <div class="col-lg-6">
-        <div class="card">
-          <div class="card-body bg-light">
-            <h4 class="card-title">Request a Free Estimate</h4>
-            <form>
-              <div class="mb-3">
-                <input type="text" class="form-control" placeholder="Your Name">
-              </div>
-              <div class="mb-3">
-                <input type="email" class="form-control" placeholder="Your Email">
-              </div>
-              <div class="mb-3">
-                <input type="tel" class="form-control" placeholder="Your Phone">
-              </div>
-              <div class="mb-3">
-                <textarea class="form-control" rows="3" placeholder="Tell us about your HVAC needs"></textarea>
-              </div>
-              <button type="button" class="btn btn-primary w-100">Get Your Free Estimate</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Testimonials Section -->
-<div class="container my-5">
-  <div class="text-center mb-4">
-    <h2>What Our Customers Say</h2>
-    <p class="lead">Trusted by homeowners and businesses in {{city}} and beyond</p>
-  </div>
-  
-  <div class="row">
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <div class="card-body">
-          <div class="mb-2">
-            <span class="text-warning">★★★★★</span>
-          </div>
-          <p class="card-text">"{{businessName}} provided excellent service when our AC broke down in the middle of summer. Fast response and professional work!"</p>
-          <p class="card-text text-end"><small class="text-muted">- Sarah J., {{city}}</small></p>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <div class="card-body">
-          <div class="mb-2">
-            <span class="text-warning">★★★★★</span>
-          </div>
-          <p class="card-text">"The team at {{businessName}} was professional, knowledgeable, and courteous. They installed our new furnace on time and within budget."</p>
-          <p class="card-text text-end"><small class="text-muted">- Michael T., {{city}}</small></p>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <div class="card-body">
-          <div class="mb-2">
-            <span class="text-warning">★★★★★</span>
-          </div>
-          <p class="card-text">"We've been using {{businessName}} for all our HVAC needs for years. Their maintenance program has saved us money and prevented problems."</p>
-          <p class="card-text text-end"><small class="text-muted">- Jennifer R., {{city}}</small></p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

@@ -1,300 +1,227 @@
 <!-- Hero Section -->
-<section class="bg-hero-pattern contact-hero text-white py-16 md:py-24">
+<section class="bg-hero-pattern contact-hero text-white py-20 md:py-28">
   <div class="container mx-auto px-4">
     <div class="max-w-3xl mx-auto text-center">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-      <p class="text-xl mb-4">Reach out for all your HVAC needs in {{city}}, {{state}} and surrounding areas.</p>
+      <p class="text-xl mb-8">Reach out to our team for all your HVAC needs in {{city}}, {{state}}.</p>
     </div>
   </div>
 </section>
 
-<!-- Contact Information -->
+<!-- Contact Information & Form Section -->
 <section class="py-16">
   <div class="container mx-auto px-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Contact Information -->
       <div>
-        <h2 class="text-3xl font-bold mb-6">Get in Touch</h2>
-        <p class="text-gray-600 mb-8">We're here to answer your questions and provide the HVAC solutions you need. Contact us by phone, email, or using the form on this page.</p>
+        <h2 class="text-3xl font-bold mb-8">Get In Touch</h2>
 
         <div class="space-y-6">
+          <!-- Phone -->
           <div class="flex items-start">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
-              <i class="fas fa-map-marker-alt"></i>
-            </div>
-            <div>
-              <h3 class="font-bold text-lg mb-1">Address</h3>
-              <p class="text-gray-600">{{full_address}}</p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+            <div class="bg-blue-100 p-3 rounded-full text-blue-600 mr-4">
               <i class="fas fa-phone-alt"></i>
             </div>
             <div>
-              <h3 class="font-bold text-lg mb-1">Phone</h3>
-              <p class="text-gray-600">
-                <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="hover:text-blue-600">{{phone}}</a>
-              </p>
-              <p class="text-sm text-gray-500 mt-1">Available 24/7 for emergency service</p>
+              <h3 class="font-bold text-lg">Phone</h3>
+              <p class="text-gray-600 mb-2">Call us for immediate assistance</p>
+              <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="text-blue-600 font-bold hover:text-blue-800 transition">{{phone}}</a>
             </div>
           </div>
 
+          <!-- Email -->
           <div class="flex items-start">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+            <div class="bg-blue-100 p-3 rounded-full text-blue-600 mr-4">
               <i class="fas fa-envelope"></i>
             </div>
             <div>
-              <h3 class="font-bold text-lg mb-1">Email</h3>
-              <p class="text-gray-600">
-                <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="hover:text-blue-600">{{email}}</a>
-              </p>
+              <h3 class="font-bold text-lg">Email</h3>
+              <p class="text-gray-600 mb-2">Send us your inquiry anytime</p>
+              <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="text-blue-600 font-bold hover:text-blue-800 transition">{{email}}</a>
             </div>
           </div>
 
+          <!-- Address -->
           <div class="flex items-start">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+            <div class="bg-blue-100 p-3 rounded-full text-blue-600 mr-4">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg">Location</h3>
+              <p class="text-gray-600 mb-2">Serving {{city}}, {{state}} and surrounding areas</p>
+              <address class="not-italic text-gray-600">
+                {{#if full_address}}{{full_address}}{{else}}{{city}}, {{state}}{{/if}}
+              </address>
+            </div>
+          </div>
+
+          <!-- Hours -->
+          <div class="flex items-start">
+            <div class="bg-blue-100 p-3 rounded-full text-blue-600 mr-4">
               <i class="fas fa-clock"></i>
             </div>
             <div>
-              <h3 class="font-bold text-lg mb-1">Business Hours</h3>
-              <p class="text-gray-600">Monday - Friday: 8:00 AM - 6:00 PM</p>
-              <p class="text-gray-600">Saturday: 9:00 AM - 4:00 PM</p>
-              <p class="text-gray-600">Sunday: Closed</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="bg-gray-50 p-8 rounded-lg shadow-md">
-          <h2 class="text-2xl font-bold mb-6">Send Us a Message</h2>
-
-          <form id="contactForm" onsubmit="handleFormSubmit(event)">
-            <div class="mb-4">
-              <label for="name" class="block text-gray-700 mb-2">Name</label>
-              <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-            </div>
-
-            <div class="mb-4">
-              <label for="email" class="block text-gray-700 mb-2">Email</label>
-              <input type="email" id="email" name="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-            </div>
-
-            <div class="mb-4">
-              <label for="phone" class="block text-gray-700 mb-2">Phone</label>
-              <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <div class="mb-4">
-              <label for="service" class="block text-gray-700 mb-2">Service Needed</label>
-              <select id="service" name="service" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select a service</option>
-                <option value="AC Installation">AC Installation</option>
-                <option value="AC Repair">AC Repair</option>
-                <option value="Heating Installation">Heating Installation</option>
-                <option value="Heating Repair">Heating Repair</option>
-                <option value="Maintenance">Maintenance</option>
-                <option value="Indoor Air Quality">Indoor Air Quality</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div class="mb-6">
-              <label for="message" class="block text-gray-700 mb-2">Message</label>
-              <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
-            </div>
-
-            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition">
-              Send Message
-            </button>
-          </form>
-
-          <div id="formSuccess" class="hidden mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
-            Thank you for your message! We'll be in touch soon.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Service Areas -->
-<section class="py-16 bg-gray-100">
-  <div class="container mx-auto px-4">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold mb-4">Our Service Areas</h2>
-      <p class="text-xl text-gray-600 max-w-3xl mx-auto">We provide HVAC services throughout {{city}}, {{state}} and these surrounding areas:</p>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-      <div class="bg-white p-4 rounded-lg shadow text-center">{{city}}</div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">Nearby City 1</div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">Nearby City 2</div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">Nearby City 3</div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">Nearby City 4</div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">Nearby City 5</div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">Nearby City 6</div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">Nearby City 7</div>
-    </div>
-  </div>
-</section>
-
-<script>
-  function handleFormSubmit(event) {
-    event.preventDefault();
-
-    // In a real implementation, you would send the form data to the server
-    // For now, we'll just show the success message and track the form submission
-
-    document.getElementById('contactForm').classList.add('hidden');
-    document.getElementById('formSuccess').classList.remove('hidden');
-
-    // Track form submission
-    trackFormSubmission('contact');
-  }
-</script>
-<!-- Contact Page Hero -->
-<div class="hero text-center" style="padding: 80px 0;">
-  <div class="container">
-    <h1>Contact Us</h1>
-    <p class="lead">We're here to help with all your HVAC needs</p>
-  </div>
-</div>
-
-<div class="container my-5">
-  <div class="row">
-    <div class="col-lg-6">
-      <h2>Get In Touch</h2>
-      <p>Need assistance with your heating, cooling, or ventilation system? Our team of experienced HVAC technicians is ready to help you with installations, repairs, maintenance, and more.</p>
-
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5>Contact Information</h5>
-          <p><strong>Address:</strong><br>{{full_address}}</p>
-          <p><strong>Phone:</strong><br><a href="tel:{{phone}}">{{phone}}</a></p>
-          <p><strong>Email:</strong><br><a href="mailto:{{email}}">{{email}}</a></p>
-          <p><strong>Hours of Operation:</strong><br>
-            Monday-Friday: 8am-6pm<br>
-            Saturday: 9am-2pm<br>
-            Sunday: Closed<br>
-            <span class="text-danger">24/7 Emergency Service Available</span>
-          </p>
-        </div>
-      </div>
-
-      <h4>Service Areas</h4>
-      <p>We proudly serve {{city}}, {{state}} and surrounding areas including:</p>
-      <div class="row">
-        <div class="col-md-6">
-          <ul>
-            <li>Neighboring Town 1</li>
-            <li>Neighboring Town 2</li>
-            <li>Neighboring Town 3</li>
-          </ul>
-        </div>
-        <div class="col-md-6">
-          <ul>
-            <li>Neighboring Town 4</li>
-            <li>Neighboring Town 5</li>
-            <li>And more!</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
-          <h3 class="card-title">Request Service or Free Estimate</h3>
-          <form id="contactForm">
-            <input type="hidden" id="businessId" value="{{businessData.id}}">
-
-            <div class="mb-3">
-              <label for="name" class="form-label">Your Name *</label>
-              <input type="text" class="form-control" id="name" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="email" class="form-label">Email Address *</label>
-              <input type="email" class="form-control" id="email" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="phone" class="form-label">Phone Number *</label>
-              <input type="tel" class="form-control" id="phone" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="serviceType" class="form-label">Service Needed</label>
-              <select class="form-select" id="serviceType">
-                <option>Heating Repair</option>
-                <option>AC Repair</option>
-                <option>New System Installation</option>
-                <option>Maintenance Service</option>
-                <option>Indoor Air Quality</option>
-                <option>Other</option>
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label for="message" class="form-label">Message</label>
-              <textarea class="form-control" id="message" rows="4" placeholder="Please describe your HVAC needs or issues"></textarea>
-            </div>
-
-            <div class="mb-3">
-              <label for="preferredDate" class="form-label">Preferred Service Date</label>
-              <input type="date" class="form-control" id="preferredDate">
-            </div>
-
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="urgentService">
-                <label class="form-check-label" for="urgentService">
-                  This is urgent (same-day service requested)
-                </label>
+              <h3 class="font-bold text-lg">Business Hours</h3>
+              <p class="text-gray-600 mb-2">Our regular schedule</p>
+              <div class="text-gray-600">
+                <p>Monday - Friday: 8:00 AM - 6:00 PM</p>
+                <p>Saturday: 9:00 AM - 2:00 PM</p>
+                <p>Sunday: Closed</p>
+                <p class="mt-2 font-semibold">24/7 Emergency Service Available</p>
               </div>
             </div>
-
-            <button type="submit" class="btn btn-primary w-100">Submit Request</button>
-          </form>
+          </div>
         </div>
+
+        <!-- Service Areas -->
+        <div class="mt-12">
+          <h3 class="text-xl font-bold mb-4">Service Areas</h3>
+          <p class="text-gray-600 mb-4">We provide HVAC services to the following areas:</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-gray-100 px-4 py-2 rounded">{{city}}, {{state}}</div>
+            <div class="bg-gray-100 px-4 py-2 rounded">Surrounding Communities</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="bg-gray-50 p-6 lg:p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6">Send Us a Message</h2>
+        <form id="contactForm" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="name" class="block text-gray-700 font-medium mb-1">Name*</label>
+              <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label for="phone" class="block text-gray-700 font-medium mb-1">Phone*</label>
+              <input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+
+          <div>
+            <label for="email" class="block text-gray-700 font-medium mb-1">Email*</label>
+            <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <div>
+            <label for="service" class="block text-gray-700 font-medium mb-1">Service Needed</label>
+            <select id="service" name="service" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Select a Service</option>
+              <option value="Heating">Heating</option>
+              <option value="Cooling">Cooling</option>
+              <option value="Air Quality">Air Quality</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Installation">New Installation</option>
+              <option value="Commercial">Commercial HVAC</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-gray-700 font-medium mb-1">Message*</label>
+            <textarea id="message" name="message" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" name="urgent" class="rounded text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-gray-700">This is an urgent request</span>
+            </label>
+          </div>
+
+          <div>
+            <button type="submit" onclick="trackContactClick('form')" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition">
+              Send Message
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-500">* Required fields. We'll get back to you as soon as possible.</p>
+        </form>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Emergency Service Call-to-Action -->
-<div class="cta-section bg-danger text-white text-center">
-  <div class="container py-4">
-    <h3>24/7 Emergency HVAC Service</h3>
-    <p class="lead mb-3">Don't wait! Call us now for immediate assistance</p>
-    <a href="tel:{{phone}}" class="btn btn-light btn-lg">{{phone}}</a>
+<!-- Emergency Service -->
+<section class="py-10 bg-red-50">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col md:flex-row items-center justify-between bg-white p-6 rounded-lg shadow-md">
+      <div class="mb-6 md:mb-0 md:mr-6">
+        <h3 class="text-2xl font-bold text-red-600 mb-2">24/7 Emergency HVAC Service</h3>
+        <p class="text-gray-700">Heating or cooling emergency? We're available around the clock to restore your comfort.</p>
+      </div>
+      <a href="tel:{{phone}}" onclick="trackContactClick('emergency')" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition flex items-center">
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        Call for Emergency Service
+      </a>
+    </div>
   </div>
-</div>
+</section>
 
+<!-- FAQ Section -->
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+
+    <div class="max-w-3xl mx-auto space-y-6">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-lg mb-2">How quickly can you respond to service calls?</h3>
+        <p class="text-gray-600">We pride ourselves on fast response times. For standard service calls, we typically respond within 24-48 hours. For emergencies, we offer same-day service.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-lg mb-2">Do you offer free estimates?</h3>
+        <p class="text-gray-600">Yes, we provide free estimates for new installations and major repair work. Contact us to schedule your no-obligation estimate.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-lg mb-2">What brands do you service?</h3>
+        <p class="text-gray-600">Our technicians are trained to service all major HVAC brands and equipment types, including Carrier, Trane, Lennox, Rheem, Goodman, and many others.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-lg mb-2">Do you offer maintenance plans?</h3>
+        <p class="text-gray-600">Yes, we offer several maintenance plan options for both residential and commercial customers. Regular maintenance helps prevent breakdowns and extends the life of your equipment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Form Submission Script -->
 <script>
-  // Form submission handling
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+  document.getElementById('contactForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-    // Track form submission
-    fetch('/api/analytics-event', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        businessId: {{businessData.id}},
-        eventType: 'formSubmission',
-        formType: 'contactForm',
-        pagePath: window.location.pathname,
-        sessionId: localStorage.getItem('visitorId'),
-        currentPage: 'contact'
-      })
+    // Get form data
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const service = document.getElementById('service').value;
+    const message = document.getElementById('message').value;
+    const urgent = document.querySelector('input[name="urgent"]').checked;
+
+    // Track form submission analytics
+    recordAnalyticsEvent('formSubmission', { 
+      formType: 'contact',
+      serviceRequested: service,
+      urgent: urgent
     });
 
     // Show success message
-    this.innerHTML = '<div class="alert alert-success"><h4>Thank you for contacting us!</h4><p>We\'ve received your request and will get back to you shortly. If your request is urgent, please call us directly at {{phone}}.</p></div>';
+    alert(`Thank you ${name}! Your message has been sent. We'll contact you shortly.`);
+
+    // Reset form
+    this.reset();
   });
+
+
+  function trackContactClick(method) {
+    // Add your analytics tracking code here for each contact method
+    console.log(`Contact clicked via: ${method}`);
+  }
+  function recordAnalyticsEvent(eventType, data) {
+    // Add your analytics tracking code here.  This example uses console.log for demonstration.
+    console.log(`Event: ${eventType}, Data:`, data);
+  }
 </script>
