@@ -1,0 +1,251 @@
+<!-- Hero Section -->
+<section class="bg-hero-pattern contact-hero text-white py-20 md:py-32">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
+      <p class="text-xl mb-8">Get in touch with our team of electrical experts serving {{city}}, {{state}} and surrounding areas.</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition">
+          <i class="fas fa-phone-alt mr-2"></i>Call {{phone}}
+        </a>
+        <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="bg-yellow-400 text-blue-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-300 transition">
+          <i class="fas fa-envelope mr-2"></i>Email Us
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col md:flex-row items-start gap-10 max-w-6xl mx-auto">
+      <div class="flex-1 bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-3xl font-bold mb-6">Get In Touch</h2>
+        <form id="contactForm" class="space-y-4" onsubmit="event.preventDefault(); handleFormSubmit();">
+          <div>
+            <label for="name" class="block text-gray-700 mb-2">Name*</label>
+            <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="email" class="block text-gray-700 mb-2">Email*</label>
+            <input type="email" id="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="phone" class="block text-gray-700 mb-2">Phone*</label>
+            <input type="tel" id="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="service" class="block text-gray-700 mb-2">Service Needed</label>
+            <select id="service" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Please select...</option>
+              <option value="residential">Residential Services</option>
+              <option value="commercial">Commercial Services</option>
+              <option value="industrial">Industrial Services</option>
+              <option value="repair">Electrical Repair</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="message" class="block text-gray-700 mb-2">Message*</label>
+            <textarea id="message" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+          <button type="submit" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition w-full md:w-auto">
+            Submit Request
+          </button>
+        </form>
+        <div id="formSuccess" class="mt-4 p-4 bg-green-100 text-green-700 rounded-md hidden">
+          <p class="font-bold">Thank you for contacting us!</p>
+          <p>We've received your message and will get back to you shortly.</p>
+        </div>
+        <div id="formError" class="mt-4 p-4 bg-red-100 text-red-700 rounded-md hidden">
+          <p class="font-bold">Oops! Something went wrong.</p>
+          <p>Please try again or contact us directly by phone.</p>
+        </div>
+      </div>
+      
+      <div class="flex-1 bg-blue-600 text-white p-8 rounded-lg">
+        <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <div class="text-2xl mr-4 pt-1">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <p class="font-bold mb-1">Address</p>
+              <p>{{full_address}}</p>
+              <p>{{city}}, {{state}} {{postal_code}}</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="text-2xl mr-4 pt-1">
+              <i class="fas fa-phone-alt"></i>
+            </div>
+            <div>
+              <p class="font-bold mb-1">Phone</p>
+              <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="hover:text-blue-200 transition">{{phone}}</a>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="text-2xl mr-4 pt-1">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+              <p class="font-bold mb-1">Email</p>
+              <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="hover:text-blue-200 transition">{{email}}</a>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="text-2xl mr-4 pt-1">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div>
+              <p class="font-bold mb-1">Business Hours</p>
+              <div id="businessHours">
+                <p class="mb-1">Monday - Friday: 8:00 AM - 5:00 PM</p>
+                <p class="mb-1">Saturday: 9:00 AM - 2:00 PM</p>
+                <p class="mb-1">Sunday: Closed</p>
+                <p class="font-bold mt-2">24/7 Emergency Service Available</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6">
+            <p class="font-bold mb-2">Connect With Us</p>
+            <div class="flex space-x-4">
+              <a href="#" onclick="trackContactClick('facebook')" class="text-white hover:text-blue-200 text-2xl"><i class="fab fa-facebook"></i></a>
+              <a href="#" onclick="trackContactClick('twitter')" class="text-white hover:text-blue-200 text-2xl"><i class="fab fa-twitter"></i></a>
+              <a href="#" onclick="trackContactClick('instagram')" class="text-white hover:text-blue-200 text-2xl"><i class="fab fa-instagram"></i></a>
+              <a href="#" onclick="trackContactClick('linkedin')" class="text-white hover:text-blue-200 text-2xl"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Service Areas Section -->
+<section class="py-16 bg-gray-100">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold mb-4">Our Service Areas</h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">We proudly serve {{city}}, {{state}} and the following surrounding areas:</p>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">{{city}}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">North {{city}}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">South {{city}}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">East {{city}}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">West {{city}}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">Downtown {{city}}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">{{city}} Metro Area</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <p class="font-bold">Neighboring Counties</p>
+      </div>
+    </div>
+    
+    <div class="text-center mt-8">
+      <p class="text-gray-600">Not sure if we service your area? Give us a call!</p>
+      <a href="tel:{{phone}}" 
+         onclick="trackContactClick('phone')"
+         class="inline-block mt-4 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition">
+        <i class="fas fa-phone-alt mr-2"></i>Call {{phone}}
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">Find answers to commonly asked questions about our electrical services.</p>
+    </div>
+    
+    <div class="max-w-4xl mx-auto space-y-6">
+      <!-- FAQ Item 1 -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-xl mb-2">Are you licensed and insured?</h3>
+        <p class="text-gray-600">Yes, {{businessName}} is fully licensed, bonded, and insured. We carry comprehensive liability insurance and workers' compensation coverage for your protection and peace of mind.</p>
+      </div>
+      
+      <!-- FAQ Item 2 -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-xl mb-2">Do you offer free estimates?</h3>
+        <p class="text-gray-600">Yes, we provide free estimates for most electrical projects. Contact us to schedule a consultation, and one of our experienced electricians will assess your needs and provide a detailed estimate.</p>
+      </div>
+      
+      <!-- FAQ Item 3 -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-xl mb-2">How quickly can you respond to an emergency?</h3>
+        <p class="text-gray-600">We offer 24/7 emergency electrical services and typically respond within 1-2 hours for urgent situations. Your safety is our priority, and we understand that electrical emergencies require immediate attention.</p>
+      </div>
+      
+      <!-- FAQ Item 4 -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-xl mb-2">Do you offer warranties on your work?</h3>
+        <p class="text-gray-600">Yes, we stand behind our workmanship with warranties on all services we provide. Specific warranty terms vary based on the type of work performed, but all our repairs and installations come with a satisfaction guarantee.</p>
+      </div>
+      
+      <!-- FAQ Item 5 -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold text-xl mb-2">What payment methods do you accept?</h3>
+        <p class="text-gray-600">We accept cash, checks, and all major credit cards for your convenience. For larger projects, we also offer financing options with approved credit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function handleFormSubmit() {
+    // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const service = document.getElementById('service').value;
+    const message = document.getElementById('message').value;
+    
+    // Hide any previous messages
+    document.getElementById('formSuccess').classList.add('hidden');
+    document.getElementById('formError').classList.add('hidden');
+    
+    // Track form submission
+    recordAnalyticsEvent('formSubmission', {
+      formType: 'contact',
+      service: service
+    });
+    
+    // In a real implementation, you would send this data to your backend
+    // For this demo, we'll just simulate a successful submission
+    setTimeout(() => {
+      // Show success message
+      document.getElementById('formSuccess').classList.remove('hidden');
+      
+      // Reset form
+      document.getElementById('contactForm').reset();
+      
+      // Track contact click
+      trackContactClick('contactForm');
+    }, 1000);
+  }
+</script>

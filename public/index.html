@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Business Pipeline</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <style>
     body { padding-top: 20px; }
     .business-card {
@@ -38,13 +36,6 @@
 <body>
   <div class="container-fluid">
     <h1 class="mb-4">Business Pipeline</h1>
-
-
-      <div id="websiteViewedBusinesses">
-        <!-- Businesses will be loaded here -->
-      </div>
-    </div>
-  </div>
 
     <div class="row mb-3">
       <div class="col-md-3">
@@ -89,11 +80,11 @@
     </div>
 
     <!-- Business Details Modal -->
-    <div class="modal fade" id="businessModal" tabindex="-1" aria-labelledby="businessModalLabel" aria-hidden="true">
+    <div class="modal fade" id="businessDetailModal" tabindex="-1" aria-labelledby="businessDetailModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="businessName">Business Details</h5>
+            <h5 class="modal-title" id="modalBusinessName">Business Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -102,38 +93,97 @@
                 <div class="card mb-3">
                   <div class="card-header">Contact Information</div>
                   <div class="card-body">
-                    <p><span class="info-label">Phone:</span> <span id="businessPhone"></span></p>
-                    <p><span class="info-label">Phone Type:</span> <span id="businessPhoneType"></span></p>
-                    <p><span class="info-label">Email:</span> <span id="businessEmail"></span></p>
-                    <p><span class="info-label">Address:</span> <span id="businessAddress"></span></p>
-                  </div>
-                </div>
-                <div class="card mb-3">
-                  <div class="card-header">Ratings</div>
-                  <div class="card-body">
-                    <p><span class="info-label">Rating:</span> <span id="businessRating"></span></p>
-                    <p><span class="info-label">Reviews:</span> <span id="businessReviews"></span></p>
+                    <p><span class="info-label">Phone:</span> <span id="modalBusinessPhone"></span></p>
+                    <p><span class="info-label">Email:</span> <span id="modalBusinessEmail"></span></p>
+                    <p><span class="info-label">Address:</span> <span id="modalBusinessAddress"></span></p>
+                    <p><span class="info-label">Website URL:</span> <a href="#" id="businessWebsiteLink" target="_blank">View Website</a></p>
+                    <p><span class="info-label">Website Key:</span> <span id="modalBusinessWebsiteKey"></span></p>
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="card mb-3">
-                  <div class="card-header">Hours</div>
-                  <div class="card-body">
-                    <div id="businessHours"></div>
-                  </div>
-                </div>
-                <div class="card mb-3">
                   <div class="card-header">Pipeline Status</div>
                   <div class="card-body">
-                    <div id="pipelineStatus"></div>
+                    <p>Current Stage: <span id="modalPipelineStage" class="badge bg-primary"></span></p>
+                    <div class="mt-3">
+                      <label for="pipelineStageSelect" class="form-label">Update Pipeline Stage:</label>
+                      <select id="pipelineStageSelect" class="form-select mb-2">
+                        <option value="">Select Stage</option>
+                        <option value="website created">Website Created</option>
+                        <option value="website sent">Website Sent</option>
+                        <option value="website viewed">Website Viewed</option>
+                        <option value="contact_made">Contact Made</option>
+                      </select>
+                      <textarea id="pipelineNotes" class="form-control mb-2" placeholder="Notes (optional)"></textarea>
+                      <button id="updatePipelineBtn" class="btn btn-primary">Update Stage</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            
+            <!-- Website Activity Section -->
             <div class="card mb-3">
-              <div class="card-header">Social Media</div>
-              <div class="card-body" id="socialLinks">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Website Activity</span>
+                <span class="badge bg-info" id="activityCount">Loading...</span>
+              </div>
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-md-3">
+                    <div class="card bg-light">
+                      <div class="card-body text-center">
+                        <h3 id="totalViews">-</h3>
+                        <p class="mb-0">Total Views</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="card bg-light">
+                      <div class="card-body text-center">
+                        <h3 id="uniqueVisitors">-</h3>
+                        <p class="mb-0">Unique Visitors</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="card bg-light">
+                      <div class="card-body text-center">
+                        <h3 id="avgTimeOnSite">-</h3>
+                        <p class="mb-0">Avg. Time (sec)</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="card bg-light">
+                      <div class="card-body text-center">
+                        <h3 id="lastViewed">-</h3>
+                        <p class="mb-0">Last Viewed</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <h5>Session History</h5>
+                <div class="table-responsive">
+                  <table class="table table-striped table-sm">
+                    <thead>
+                      <tr>
+                        <th>Date/Time</th>
+                        <th>Duration</th>
+                        <th>Pages</th>
+                        <th>Actions</th>
+                        <th>Source</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sessionHistoryTable">
+                      <tr>
+                        <td colspan="5" class="text-center">Loading session data...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -146,17 +196,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Make sure Bootstrap is fully loaded before loading our script
-    window.addEventListener('load', function() {
-      if (typeof bootstrap === 'undefined') {
-        console.error('Bootstrap failed to load!');
-        document.body.innerHTML = '<div class="alert alert-danger m-3">Error: Bootstrap failed to load. Please refresh the page.</div>';
-      } else {
-        console.log('Bootstrap loaded successfully');
-      }
-    });
-  </script>
   <script src="script.js"></script>
 </body>
 </html>

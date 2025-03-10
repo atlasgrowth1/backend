@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{pageTitle}} - {{businessName}} | Professional Electrical Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Custom styles */
+    .bg-hero-pattern {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .home-hero {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80');
+    }
+    .residential-hero {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80');
+    }
+    .commercial-hero {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80');
+    }
+    .industrial-hero {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1516937941344-00b4e0337589?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');
+    }
+    .contact-hero {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1553152531-b98a2fc8d3bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');
+    }
+  </style>
+  <script>
+    // Initialize analytics tracking data
+    const businessData = {{businessData}};
+    const visitStartTime = Date.now();
+    const currentPage = "{{currentPage}}";
+    let scrollDepth = 0;
+    let hasContactClicked = false;
+    
+    // Function to record analytics event with retries
+    async function recordAnalyticsEvent(eventType, additionalData = {}, retriesLeft = 3) {
+      try {
+        // Get a unique session ID stored in localStorage
+        let sessionId = localStorage.getItem('visitorSessionId');
+        if (!sessionId) {
+          sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+          localStorage.setItem('visitorSessionId', sessionId);
+        }
+        
+        const response = await fetch('/api/analytics-event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Session-ID': sessionId
+          },
+          body: JSON.stringify({
+            businessId: businessData.id,
+            eventType,
+            pagePath: window.location.pathname,
+            duration: eventType === 'pageLeave' ? Math.round((Date.now() - visitStartTime) / 1000) : 0,
+            sessionId: sessionId,
+            currentPage,
+            ...additionalData
+          })
+        });
+        
+        if (!response.ok) {
+          console.error('Failed to record analytics event:', response.statusText);
+          if (retriesLeft > 0) {
+            setTimeout(() => {
+              recordAnalyticsEvent(eventType, additionalData, retriesLeft - 1);
+            }, 1000);
+          }
+        }
+      } catch (error) {
+        console.error('Error recording analytics event:', error);
+        if (retriesLeft > 0) {
+          setTimeout(() => {
+            recordAnalyticsEvent(eventType, additionalData, retriesLeft - 1);
+          }, 1000);
+        }
+      }
+    }
+    
+    // Function to record website view with retries
+    async function recordWebsiteView(retriesLeft = 3) {
+      try {
+        // Get a unique session ID stored in localStorage
+        let sessionId = localStorage.getItem('visitorSessionId');
+        if (!sessionId) {
+          sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+          localStorage.setItem('visitorSessionId', sessionId);
+        }
+        
+        // Track session start time
+        const sessionStartTime = Date.now();
+        localStorage.setItem('sessionStartTime', sessionStartTime);
+        
+        // Record the website view with session data
+        const response = await fetch(`/api/website-view/${businessData.id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Session-ID': sessionId
+          },
+          body: JSON.stringify({
+            sessionId: sessionId,
+            startTime: sessionStartTime,
+            currentPage
+          })
+        });
+        
+        if (!response.ok) {
+          console.error('Failed to record website view:', response.statusText);
+          if (retriesLeft > 0) {
+            setTimeout(() => {
+              recordWebsiteView(retriesLeft - 1);
+            }, 1000);
+          }
+        }
+      } catch (error) {
+        console.error('Error recording website view:', error);
+        if (retriesLeft > 0) {
+          setTimeout(() => {
+            recordWebsiteView(retriesLeft - 1);
+          }, 1000);
+        }
+      }
+    }
+    
+    // Record page view on load
+    window.addEventListener('load', function() {
+      // Record the website view (also updates pipeline)
+      recordWebsiteView();
+      
+      // Record page view analytics
+      recordAnalyticsEvent('pageView', { page: currentPage });
+    });
+    
+    // Record page leave
+    window.addEventListener('beforeunload', function() {
+      // Calculate max scroll depth as percentage
+      const scrollHeight = Math.max(
+        document.body.scrollHeight, 
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight, 
+        document.documentElement.offsetHeight
+      );
+      const viewportHeight = window.innerHeight;
+      scrollDepth = Math.round((window.scrollY + viewportHeight) / scrollHeight * 100);
+      
+      // Record page leave with scroll depth and duration
+      recordAnalyticsEvent('pageLeave', { scrollDepth, page: currentPage });
+    });
+    
+    // Track scroll depth
+    window.addEventListener('scroll', function() {
+      const newScrollDepth = Math.round((window.scrollY + window.innerHeight) / 
+        Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) * 100);
+      if (newScrollDepth > scrollDepth) {
+        scrollDepth = newScrollDepth;
+      }
+    });
+    
+    // Track contact clicks
+    function trackContactClick(method) {
+      hasContactClicked = true;
+      recordAnalyticsEvent('contactClick', { contactMethod: method, page: currentPage });
+    }
+    
+    // Track page navigation
+    function trackPageNavigation(targetPage) {
+      recordAnalyticsEvent('pageNavigation', { 
+        fromPage: currentPage,
+        toPage: targetPage
+      });
+    }
+  </script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="bg-blue-600 text-white sticky top-0 z-50 shadow-md">
+    <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+      <div class="text-center md:text-left mb-4 md:mb-0">
+        <a href="/electricians/{{businessKey}}" class="text-2xl font-bold hover:text-blue-100">{{businessName}}</a>
+        <p class="text-blue-100 text-sm">Professional Electrical Services</p>
+      </div>
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          <li><a href="/electricians/{{businessKey}}" onclick="trackPageNavigation('home')" class="hover:text-blue-200 transition {{#if isHome}}font-bold border-b-2 border-white pb-1{{/if}}">Home</a></li>
+          <li><a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="hover:text-blue-200 transition {{#if isResidential}}font-bold border-b-2 border-white pb-1{{/if}}">Residential</a></li>
+          <li><a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="hover:text-blue-200 transition {{#if isCommercial}}font-bold border-b-2 border-white pb-1{{/if}}">Commercial</a></li>
+          <li><a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="hover:text-blue-200 transition {{#if isIndustrial}}font-bold border-b-2 border-white pb-1{{/if}}">Industrial</a></li>
+          <li><a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="hover:text-blue-200 transition {{#if isContact}}font-bold border-b-2 border-white pb-1{{/if}}">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="hidden md:block">
+        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="inline-block bg-white text-blue-600 font-bold py-2 px-4 rounded-lg hover:bg-blue-50 transition">
+          <i class="fas fa-phone-alt mr-2"></i>{{phone}}
+        </a>
+      </div>
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button id="mobileMenuBtn" class="text-white focus:outline-none">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="md:hidden hidden bg-blue-700 pb-4 px-4">
+      <nav class="flex flex-col space-y-3 mt-2">
+        <a href="/electricians/{{businessKey}}" onclick="trackPageNavigation('home')" class="hover:text-blue-200 transition py-2 {{#if isHome}}font-bold border-l-4 border-white pl-2{{/if}}">Home</a>
+        <a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="hover:text-blue-200 transition py-2 {{#if isResidential}}font-bold border-l-4 border-white pl-2{{/if}}">Residential</a>
+        <a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="hover:text-blue-200 transition py-2 {{#if isCommercial}}font-bold border-l-4 border-white pl-2{{/if}}">Commercial</a>
+        <a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="hover:text-blue-200 transition py-2 {{#if isIndustrial}}font-bold border-l-4 border-white pl-2{{/if}}">Industrial</a>
+        <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="hover:text-blue-200 transition py-2 {{#if isContact}}font-bold border-l-4 border-white pl-2{{/if}}">Contact</a>
+        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-600 font-bold py-2 px-4 rounded-lg hover:bg-blue-50 transition text-center">
+          <i class="fas fa-phone-alt mr-2"></i>{{phone}}
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    {{content}}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-10">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between mb-8">
+        <div class="mb-6 md:mb-0">
+          <h3 class="text-xl font-bold mb-4">{{businessName}}</h3>
+          <p class="max-w-xs text-gray-400">Professional electrical services for residential, commercial, and industrial properties in {{city}}, {{state}} and surrounding areas.</p>
+        </div>
+        
+        <div class="mb-6 md:mb-0">
+          <h4 class="font-bold mb-4">Our Services</h4>
+          <ul class="space-y-2">
+            <li><a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="text-gray-400 hover:text-white transition">Residential</a></li>
+            <li><a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="text-gray-400 hover:text-white transition">Commercial</a></li>
+            <li><a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="text-gray-400 hover:text-white transition">Industrial</a></li>
+          </ul>
+        </div>
+        
+        <div class="mb-6 md:mb-0">
+          <h4 class="font-bold mb-4">Contact</h4>
+          <ul class="space-y-2">
+            <li class="flex items-center">
+              <i class="fas fa-map-marker-alt mr-2 text-blue-400"></i>
+              <span>{{city}}, {{state}}</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone mr-2 text-blue-400"></i>
+              <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="hover:text-blue-300">{{phone}}</a>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-2 text-blue-400"></i>
+              <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="hover:text-blue-300">{{email}}</a>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-bold mb-4">Connect With Us</h4>
+          <div class="flex space-x-4" id="socialIcons">
+            <!-- Social icons will be dynamically generated -->
+            <a href="#" onclick="trackContactClick('facebook')" class="text-2xl hover:text-blue-400 transition"><i class="fab fa-facebook"></i></a>
+            <a href="#" onclick="trackContactClick('instagram')" class="text-2xl hover:text-pink-400 transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" onclick="trackContactClick('twitter')" class="text-2xl hover:text-blue-400 transition"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pt-8 border-t border-gray-800 text-center text-gray-500">
+        <p>&copy; <span id="currentYear"></span> {{businessName}}. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Set current year in footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    
+    // Mobile menu toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>
