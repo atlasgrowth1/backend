@@ -51,9 +51,9 @@ function loadBusinesses() {
       });
 
       // Populate each stage column
-      renderBusinessesInStage('websiteCreatedBusinesses', stages['website created'] || []);
-      renderBusinessesInStage('websiteSentBusinesses', stages['website sent'] || []);
-      renderBusinessesInStage('websiteViewedBusinesses', stages['website viewed'] || []);
+      renderBusinessesInStage('websiteCreatedBusinesses', stages['website created']);
+      renderBusinessesInStage('websiteSentBusinesses', stages['website sent']);
+      renderBusinessesInStage('websiteViewedBusinesses', stages['website viewed']);
     })
     .catch(error => {
       console.error('Error fetching businesses:', error);
@@ -61,47 +61,6 @@ function loadBusinesses() {
 }
 
 // Render businesses in a specific stage
-function renderBusinessesInStage(containerId, businesses) {
-  const container = document.getElementById(containerId);
-  if (!container) {
-    console.error(`Container #${containerId} not found`);
-    return;
-  }
-  
-  container.innerHTML = '';
-  
-  if (!businesses || businesses.length === 0) {
-    container.innerHTML = '<div class="text-muted p-3">No businesses in this stage</div>';
-    return;
-  }
-  
-  businesses.forEach(business => {
-    const card = document.createElement('div');
-    card.className = 'card business-card mb-2';
-    card.innerHTML = `
-      <div class="card-body">
-        <h5 class="card-title">${business.business_name}</h5>
-        <p class="card-text mb-1"><span class="badge bg-secondary">${business.phone_type || 'Unknown'}</span></p>
-        <p class="card-text mb-1">${business.city}, ${business.state}</p>
-        <p class="card-text mb-1">${business.phone || 'No phone'}</p>
-        <div class="mt-2">
-          <button class="btn btn-sm btn-primary view-details" data-id="${business.id}">View Details</button>
-          <div class="btn-group ms-1">
-            <button class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-              Move To
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item move-stage" data-id="${business.id}" data-stage="website created">Website Created</a></li>
-              <li><a class="dropdown-item move-stage" data-id="${business.id}" data-stage="website sent">Website Sent</a></li>
-              <li><a class="dropdown-item move-stage" data-id="${business.id}" data-stage="website viewed">Website Viewed</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
 function renderBusinessesInStage(elementId, businesses) {
   const container = document.getElementById(elementId);
 
