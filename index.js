@@ -475,16 +475,53 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     let templatePath = path.join(__dirname, 'templates', templateDir);
     
     // Special case for electrician - fallback to single file if directory not found
-    if (businessTypeForQuery === 'electrician' && !fs.existsSync(templatePath).catch(() => false)) {
+    let dirExists = false;
+    try {
+      const stats = await fs.stat(templatePath);
+      dirExists = stats.isDirectory();
+    } catch (e) {
+      dirExists = false;
+    }
+    
+    if (businessTypeForQuery === 'electrician' && !dirExists) {
       // Use the electrician.html template for all pages
       const legacyTemplatePath = path.join(__dirname, 'templates', 'electrician.html');
       
       try {
         const template = await fs.readFile(legacyTemplatePath, 'utf8');
         
+        // Set page-specific variables for electrician
+        const pageData = {
+          currentPage: page,
+          pageTitle: capitalizeFirstLetter(page),
+          isHome: page === 'home',
+          isResidential: page === 'residential',
+          isCommercial: page === 'commercial',
+          isIndustrial: page === 'industrial',
+          isContact: page === 'contact',
+          businessKey: business.website_key
+        };
+        
+        // Define all possible replacement fields for electrician
+        const electricianReplacements = {
+          '{{businessName}}': business.business_name || '',
+          '{{phone}}': business.phone || '',
+          '{{email}}': business.email || '',
+          '{{city}}': business.city || '',
+          '{{state}}': business.state || '',
+          '{{postal_code}}': business.postal_code || '',
+          '{{full_address}}': business.full_address || '',
+          '{{rating}}': business.rating || '0',
+          '{{reviews}}': business.reviews || '0',
+          '{{businessData}}': JSON.stringify(business),
+          '{{currentPage}}': pageData.currentPage,
+          '{{pageTitle}}': pageData.pageTitle,
+          '{{businessKey}}': pageData.businessKey
+        };
+        
         // Replace placeholders directly
         let renderedTemplate = template;
-        for (const [placeholder, value] of Object.entries(replacements)) {
+        for (const [placeholder, value] of Object.entries(electricianReplacements)) {
           renderedTemplate = renderedTemplate.replace(new RegExp(placeholder, 'g'), value);
         }
         
