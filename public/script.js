@@ -99,7 +99,6 @@ function populateStageColumn(containerId, businesses) {
     const card = document.createElement('div');
     card.className = 'card business-card mb-2';
     card.setAttribute('data-business-id', business.id);
-    card.style.cursor = 'pointer';
     card.innerHTML = `
       <div class="card-body">
         <h5 class="card-title">${business.business_name || 'Unnamed Business'}</h5>
@@ -108,16 +107,21 @@ function populateStageColumn(containerId, businesses) {
           <small>Phone: ${business.phone || 'N/A'}</small><br>
           <small>Rating: ${business.rating || 'N/A'} (${business.reviews || '0'} reviews)</small>
         </p>
+        <button class="btn btn-sm btn-primary view-details-btn" data-id="${business.id}">View Details</button>
       </div>
     `;
     
-    // Add click event directly to the card when creating it
-    card.addEventListener('click', function() {
-      console.log('Card clicked, business ID:', business.id);
-      selectBusiness(business.id);
-    });
-    
     container.appendChild(card);
+  });
+  
+  // Add event listeners for the View Details buttons
+  container.querySelectorAll('.view-details-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation(); // Prevent event bubbling
+      const businessId = this.getAttribute('data-id');
+      console.log('View Details button clicked, business ID:', businessId);
+      selectBusiness(businessId);
+    });
   });
 }
 
