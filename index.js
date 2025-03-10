@@ -296,7 +296,7 @@ app.get('/api/pipeline/:businessId', async (req, res) => {
 });
 
 // HVAC-specific routes
-app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], async (req, res) => {
+app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) => {
   try {
     let { businessKey, page } = req.params;
     
@@ -412,10 +412,10 @@ app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], async (req, res) => 
   }
 });
 
-// Route for legacy 'hvacs' URLs - redirect to /hvac/
-app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], (req, res) => {
+// Route for legacy 'hvac' URLs - redirect to /hvacs/
+app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], (req, res) => {
   const { businessKey, page } = req.params;
-  const redirectPath = page ? `/hvac/${businessKey}/${page}` : `/hvac/${businessKey}`;
+  const redirectPath = page ? `/hvacs/${businessKey}/${page}` : `/hvacs/${businessKey}`;
   res.redirect(301, redirectPath);
 });
 
