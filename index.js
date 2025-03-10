@@ -418,7 +418,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     console.log(`Looking for business with key=${businessKey}, type=${businessTypeForQuery}, page=${page}`);
 
     const queryResult = await db.query(
-      'SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type = $2',
+      'SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND LOWER(business_type) = LOWER($2)',
       [businessKey, businessTypeForQuery]
     );
     console.log(`Query results: ${queryResult.rows.length} rows found`);
