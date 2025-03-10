@@ -312,9 +312,9 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
 
     console.log(`Looking for HVAC business with key=${businessKey}, page=${page}`);
     
-    // Direct query for HVAC business type - using a more flexible pattern match
+    // Direct query for HVAC business type - exactly match 'hvac'
     const queryResult = await db.query(
-      "SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND (business_type ILIKE 'hvac%' OR business_type ILIKE '%hvac%' OR business_type ILIKE 'hva%')",
+      "SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type = 'hvac'",
       [businessKey]
     );
     console.log(`Query results: ${queryResult.rows.length} rows found`);
@@ -336,9 +336,9 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
           key: altResult.rows[0].website_key
         });
         
-        // If it's any HVAC-related business, proceed anyway
-        if (altResult.rows[0].business_type.toLowerCase().includes('hva')) {
-          console.log(`Found HVAC-related business with key=${businessKey}, proceeding with type: ${altResult.rows[0].business_type}`);
+        // If it's an HVAC business, proceed anyway
+        if (altResult.rows[0].business_type.toLowerCase() === 'hvac') {
+          console.log(`Found HVAC business with key=${businessKey}, proceeding with type: ${altResult.rows[0].business_type}`);
           const business = await db.query('SELECT * FROM businesses WHERE id = $1', [altResult.rows[0].id]);
           if (business.rows.length > 0) {
             return handleHvacBusiness(business.rows[0], page, req, res);
@@ -348,7 +348,7 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
       
       if (altResult.rows.length > 0) {
         console.log(`Found business with key=${businessKey} but not an HVAC type:`, altResult.rows[0]);
-        return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" which isn't related to HVAC`);
+        return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" instead of expected: "hvac"`);
       } else {
         console.log(`No business found with key=${businessKey}`);
         return res.status(404).send(`Business not found with key: ${businessKey}`);
