@@ -1,0 +1,11 @@
+.business-card {
+      transition: all 0.3s;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border-left: 4px solid #6c757d;
+    }
+    .business-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-left-color: #0d6efd;
+    }

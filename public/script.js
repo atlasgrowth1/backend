@@ -88,6 +88,7 @@ function populateStageColumn(containerId, businesses) {
   businesses.forEach(business => {
     const card = document.createElement('div');
     card.className = 'card business-card mb-2';
+    card.setAttribute('data-business-id', business.id);
     card.innerHTML = `
       <div class="card-body">
         <h5 class="card-title">${business.business_name || 'Unnamed Business'}</h5>
@@ -96,15 +97,14 @@ function populateStageColumn(containerId, businesses) {
           <small>Phone: ${business.phone || 'N/A'}</small><br>
           <small>Rating: ${business.rating || 'N/A'} (${business.reviews || '0'} reviews)</small>
         </p>
-        <button class="btn btn-sm btn-primary view-details-btn" data-business-id="${business.id}">View Details</button>
       </div>
     `;
     container.appendChild(card);
   });
   
-  // Add event listeners to all view details buttons in this container
-  container.querySelectorAll('.view-details-btn').forEach(button => {
-    button.addEventListener('click', function() {
+  // Add event listeners to the entire card
+  container.querySelectorAll('.business-card').forEach(card => {
+    card.addEventListener('click', function() {
       const businessId = this.getAttribute('data-business-id');
       selectBusiness(businessId);
     });
