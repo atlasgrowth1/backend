@@ -295,7 +295,120 @@ app.get('/api/pipeline/:businessId', async (req, res) => {
   }
 });
 
-// Business website routes - handle both main route and nested routes for multi-page
+// HVAC-specific routes
+app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], async (req, res) => {
+  try {
+    let { businessKey, page } = req.params;
+    
+    // Default page is home
+    page = page ? page.toLowerCase() : 'home';
+    
+    // Valid pages
+    const validPages = ['home', 'residential', 'commercial', 'industrial', 'contact'];
+    
+    if (!validPages.includes(page)) {
+      return res.status(404).send(`Invalid page: ${page}. Valid pages are: ${validPages.join(', ')}`);
+    }
+
+    console.log(`Looking for HVAC business with key=${businessKey}, page=${page}`);
+    
+    // Direct query for HVAC business type
+    const queryResult = await db.query(
+      'SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type = $2',
+      [businessKey, 'hvac']
+    );
+    console.log(`Query results: ${queryResult.rows.length} rows found`);
+    
+    if (queryResult.rows.length === 0) {
+      // Try to find the business with any type for debugging
+      const altResult = await db.query(
+        'SELECT id, business_name, business_type, website_key FROM businesses WHERE LOWER(website_key) = LOWER($1)',
+        [businessKey]
+      );
+      
+      if (altResult.rows.length > 0) {
+        console.log(`Found business with key=${businessKey} but wrong type:`, altResult.rows[0]);
+        return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" instead of expected: "hvac"`);
+      } else {
+        console.log(`No business found with key=${businessKey}`);
+        return res.status(404).send(`Business not found with key: ${businessKey}`);
+      }
+    }
+    
+    const business = queryResult.rows[0];
+    
+    // Determine template paths for HVAC
+    const layoutPath = path.join(__dirname, 'templates', 'hvac', 'shared', 'layout.html');
+    const contentPath = path.join(__dirname, 'templates', 'hvac', 'pages', `${page}.html`);
+    
+    // Read the template files
+    let layoutTemplate, contentTemplate;
+    try {
+      layoutTemplate = await fs.readFile(layoutPath, 'utf8');
+      contentTemplate = await fs.readFile(contentPath, 'utf8');
+    } catch (err) {
+      console.error('Template not found:', err);
+      return res.status(404).send(`Template not found: ${err.path}`);
+    }
+
+    // Insert content into layout
+    let template = layoutTemplate.replace('{{content}}', contentTemplate);
+    
+    // Set page-specific variables
+    const pageData = {
+      currentPage: page,
+      pageTitle: capitalizeFirstLetter(page),
+      isHome: page === 'home',
+      isResidential: page === 'residential',
+      isCommercial: page === 'commercial',
+      isIndustrial: page === 'industrial',
+      isContact: page === 'contact',
+      businessKey: business.website_key
+    };
+    
+    // Define all possible replacement fields
+    const replacements = {
+      '{{businessName}}': business.business_name || '',
+      '{{phone}}': business.phone || '',
+      '{{email}}': business.email || '',
+      '{{city}}': business.city || '',
+      '{{state}}': business.state || '',
+      '{{postal_code}}': business.postal_code || '',
+      '{{full_address}}': business.full_address || '',
+      '{{rating}}': business.rating || '0',
+      '{{reviews}}': business.reviews || '0',
+      '{{businessData}}': JSON.stringify(business),
+      '{{currentPage}}': pageData.currentPage,
+      '{{pageTitle}}': pageData.pageTitle,
+      '{{businessKey}}': pageData.businessKey
+    };
+
+    // Handle conditional classes for navigation
+    template = template.replace(/\{\{#if (is\w+)\}\}(.*?)\{\{\/if\}\}/g, (match, condition, content) => {
+      return pageData[condition] ? content : '';
+    });
+
+    // Replace placeholders with actual data
+    for (const [placeholder, value] of Object.entries(replacements)) {
+      template = template.replace(new RegExp(placeholder, 'g'), value);
+    }
+
+    // Send the populated template
+    res.send(template);
+  } catch (error) {
+    console.error('Error serving HVAC website:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+// Route for legacy 'hvacs' URLs - redirect to /hvac/
+app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], (req, res) => {
+  const { businessKey, page } = req.params;
+  const redirectPath = page ? `/hvac/${businessKey}/${page}` : `/hvac/${businessKey}`;
+  res.redirect(301, redirectPath);
+});
+
+// Business website routes for other types (electricians, plumbers)
 app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], async (req, res) => {
   try {
     let { businessType, businessKey, page } = req.params;
@@ -307,13 +420,8 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     page = page ? page.toLowerCase() : 'home';
     
     // Valid business types and pages
-    const validTypes = ['electricians', 'plumbers', 'hvac', 'hvacs'];
+    const validTypes = ['electricians', 'plumbers'];
     const validPages = ['home', 'residential', 'commercial', 'industrial', 'contact'];
-    
-    // Normalize business type (handle both 'hvac' and 'hvacs' as the same type)
-    if (businessType === 'hvacs') {
-      businessType = 'hvac';
-    }
     
     if (!validTypes.includes(businessType)) {
       return res.status(404).send(`Invalid business type: ${businessType}. Valid types are: electricians, plumbers, hvac`);
@@ -323,15 +431,9 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
       return res.status(404).send(`Invalid page: ${page}. Valid pages are: ${validPages.join(', ')}`);
     }
 
-    // Get business data
-    let businessTypeForQuery;
+    // Get business data - remove 's' from type for other business types
+    const businessTypeForQuery = businessType.slice(0, -1);
     
-    // Special handling for HVAC businesses
-    if (businessType === 'hvac' || businessType === 'hvacs') {
-      businessTypeForQuery = 'hvac';
-    } else {
-      businessTypeForQuery = businessType.slice(0, -1); // Remove 's' from type for other business types
-    }
     console.log(`Looking for business with key=${businessKey}, type=${businessTypeForQuery}, page=${page}`);
     
     const queryResult = await db.query(
