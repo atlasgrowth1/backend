@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{businessName}} - HVAC Services in {{city}}, {{state}}</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .bg-hero-pattern {
+      background-color: #0c4a6e;
+      background-image: linear-gradient(rgba(12, 74, 110, 0.9), rgba(12, 74, 110, 0.8)), url('https://images.unsplash.com/photo-1619395554249-60098ba76e4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    .commercial-hero {
+      background-image: linear-gradient(rgba(12, 74, 110, 0.9), rgba(12, 74, 110, 0.8)), url('https://images.unsplash.com/photo-1522165078649-823cf4dbaf46?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+    }
+    .residential-hero {
+      background-image: linear-gradient(rgba(12, 74, 110, 0.9), rgba(12, 74, 110, 0.8)), url('https://images.unsplash.com/photo-1580820267682-426da823b514?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+    }
+    .industrial-hero {
+      background-image: linear-gradient(rgba(12, 74, 110, 0.9), rgba(12, 74, 110, 0.8)), url('https://images.unsplash.com/photo-1621905251189-08b45249ff78?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+    }
+    .contact-hero {
+      background-image: linear-gradient(rgba(12, 74, 110, 0.9), rgba(12, 74, 110, 0.8)), url('https://images.unsplash.com/photo-1596524430615-b46475ddff6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+    }
+  </style>
+</head>
+<body class="font-sans text-gray-800">
+  <!-- Header -->
+  <header class="bg-blue-700 text-white">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="text-center md:text-left mb-4 md:mb-0">
+          <a href="/hvacs/{{businessKey}}" class="text-2xl font-bold hover:text-blue-100">{{businessName}}</a>
+          <p class="text-blue-100 text-sm">Professional HVAC Services</p>
+        </div>
+        <nav class="hidden md:block">
+          <ul class="flex space-x-6">
+            <li><a href="/hvacs/{{businessKey}}" onclick="trackPageNavigation('home')" class="hover:text-blue-200 transition {{#if isHome}}font-bold border-b-2 border-white pb-1{{/if}}">Home</a></li>
+            <li><a href="/hvacs/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="hover:text-blue-200 transition {{#if isResidential}}font-bold border-b-2 border-white pb-1{{/if}}">Residential</a></li>
+            <li><a href="/hvacs/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="hover:text-blue-200 transition {{#if isCommercial}}font-bold border-b-2 border-white pb-1{{/if}}">Commercial</a></li>
+            <li><a href="/hvacs/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="hover:text-blue-200 transition {{#if isIndustrial}}font-bold border-b-2 border-white pb-1{{/if}}">Industrial</a></li>
+            <li><a href="/hvacs/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="hover:text-blue-200 transition {{#if isContact}}font-bold border-b-2 border-white pb-1{{/if}}">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="md:hidden">
+          <button id="mobileMenuButton" class="text-white focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="md:hidden hidden mt-4">
+        <nav>
+          <ul class="flex flex-col space-y-2">
+            <li><a href="/hvacs/{{businessKey}}" onclick="trackPageNavigation('home')" class="block py-2 px-4 hover:bg-blue-600 rounded {{#if isHome}}bg-blue-600{{/if}}">Home</a></li>
+            <li><a href="/hvacs/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="block py-2 px-4 hover:bg-blue-600 rounded {{#if isResidential}}bg-blue-600{{/if}}">Residential</a></li>
+            <li><a href="/hvacs/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="block py-2 px-4 hover:bg-blue-600 rounded {{#if isCommercial}}bg-blue-600{{/if}}">Commercial</a></li>
+            <li><a href="/hvacs/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="block py-2 px-4 hover:bg-blue-600 rounded {{#if isIndustrial}}bg-blue-600{{/if}}">Industrial</a></li>
+            <li><a href="/hvacs/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="block py-2 px-4 hover:bg-blue-600 rounded {{#if isContact}}bg-blue-600{{/if}}">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    {{content}}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">{{businessName}}</h3>
+          <p class="mb-2">Professional HVAC services in {{city}}, {{state}} and surrounding areas.</p>
+          <div class="flex items-center mt-4">
+            <div class="flex items-center mr-4">
+              <i class="fas fa-star text-yellow-400 mr-1"></i>
+              <span>{{rating}}/5</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-comment text-blue-300 mr-1"></i>
+              <span>{{reviews}} reviews</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+          <p class="flex items-center mb-2">
+            <i class="fas fa-map-marker-alt mr-2 text-blue-300"></i> 
+            {{full_address}}
+          </p>
+          <p class="flex items-center mb-2">
+            <i class="fas fa-phone-alt mr-2 text-blue-300"></i>
+            <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="hover:text-blue-300">{{phone}}</a>
+          </p>
+          <p class="flex items-center mb-2">
+            <i class="fas fa-envelope mr-2 text-blue-300"></i>
+            <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="hover:text-blue-300">{{email}}</a>
+          </p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Business Hours</h3>
+          <ul class="space-y-1">
+            <li>Monday - Friday: 8:00 AM - 6:00 PM</li>
+            <li>Saturday: 9:00 AM - 4:00 PM</li>
+            <li>Sunday: Closed</li>
+            <li class="text-yellow-400 mt-2">24/7 Emergency Service Available</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+        <p>&copy; 2024 {{businessName}}. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Analytics Tracking Scripts -->
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobileMenuButton').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Session tracking
+    const businessId = {{businessData}}.id;
+    const sessionId = localStorage.getItem('sessionId') || generateSessionId();
+    const startTime = localStorage.getItem('sessionStartTime') || Date.now();
+    let currentPage = '{{currentPage}}';
+    
+    // Generate a random session ID
+    function generateSessionId() {
+      return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+    
+    // Store session info
+    localStorage.setItem('sessionId', sessionId);
+    localStorage.setItem('sessionStartTime', startTime);
+    
+    // Record page view on load
+    window.addEventListener('DOMContentLoaded', function() {
+      recordAnalyticsEvent('pageView');
+      recordWebsiteView();
+    });
+    
+    // Record page leave on unload
+    window.addEventListener('beforeunload', function() {
+      const duration = Math.round((Date.now() - startTime) / 1000);
+      recordAnalyticsEvent('pageLeave', duration);
+    });
+    
+    // Track page navigation
+    function trackPageNavigation(page) {
+      recordAnalyticsEvent('pageNavigation', null, page);
+    }
+    
+    // Track contact clicks
+    function trackContactClick(method) {
+      recordAnalyticsEvent('contactClick', null, null, method);
+    }
+    
+    // Track form submissions
+    function trackFormSubmission(formType) {
+      recordAnalyticsEvent('formSubmission', null, null, null, formType);
+    }
+    
+    // Record website view
+    function recordWebsiteView() {
+      fetch(`/api/website-view/${businessId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Session-Id': sessionId
+        },
+        body: JSON.stringify({
+          sessionId: sessionId,
+          startTime: startTime,
+          currentPage: currentPage
+        })
+      }).catch(err => console.error('Error recording view:', err));
+    }
+    
+    // Record analytics event
+    function recordAnalyticsEvent(eventType, duration = null, targetPage = null, contactMethod = null, formType = null) {
+      fetch('/api/analytics-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Session-Id': sessionId
+        },
+        body: JSON.stringify({
+          businessId: businessId,
+          eventType: eventType,
+          pagePath: window.location.pathname,
+          duration: duration,
+          sessionId: sessionId,
+          currentPage: currentPage,
+          contactMethod: contactMethod,
+          formType: formType
+        })
+      }).catch(err => console.error('Error recording event:', err));
+    }
+  </script>
+</body>
+</html>
