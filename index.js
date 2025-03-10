@@ -312,16 +312,16 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
 
     console.log(`Looking for HVAC business with key=${businessKey}, page=${page}`);
     
-    // Direct query for HVAC business type
+    // Direct query for HVAC business type - using a more flexible pattern match
     const queryResult = await db.query(
-      'SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type ILIKE $2',
-      [businessKey, 'hvac']
+      "SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND (business_type ILIKE 'hvac%' OR business_type ILIKE '%hvac%' OR business_type ILIKE 'hva%')",
+      [businessKey]
     );
     console.log(`Query results: ${queryResult.rows.length} rows found`);
     
     if (queryResult.rows.length === 0) {
       // Try to find the business with any type for debugging
-      console.log(`No business found with key=${businessKey} and type='hvac', checking for any business with this key`);
+      console.log(`No business found with key=${businessKey} and any HVAC-related type, checking for any business with this key`);
       const altResult = await db.query(
         'SELECT id, business_name, business_type, website_key FROM businesses WHERE LOWER(website_key) = LOWER($1)',
         [businessKey]
@@ -335,11 +335,20 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
           actualType: altResult.rows[0].business_type,
           key: altResult.rows[0].website_key
         });
+        
+        // If it's any HVAC-related business, proceed anyway
+        if (altResult.rows[0].business_type.toLowerCase().includes('hva')) {
+          console.log(`Found HVAC-related business with key=${businessKey}, proceeding with type: ${altResult.rows[0].business_type}`);
+          const business = await db.query('SELECT * FROM businesses WHERE id = $1', [altResult.rows[0].id]);
+          if (business.rows.length > 0) {
+            return handleHvacBusiness(business.rows[0], page, req, res);
+          }
+        }
       }
       
       if (altResult.rows.length > 0) {
-        console.log(`Found business with key=${businessKey} but wrong type:`, altResult.rows[0]);
-        return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" instead of expected: "hvac"`);
+        console.log(`Found business with key=${businessKey} but not an HVAC type:`, altResult.rows[0]);
+        return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" which isn't related to HVAC`);
       } else {
         console.log(`No business found with key=${businessKey}`);
         return res.status(404).send(`Business not found with key: ${businessKey}`);
@@ -347,65 +356,8 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
     }
     
     const business = queryResult.rows[0];
-    
-    // Determine template paths for HVAC
-    const layoutPath = path.join(__dirname, 'templates', 'hvac', 'shared', 'layout.html');
-    const contentPath = path.join(__dirname, 'templates', 'hvac', 'pages', `${page}.html`);
-    
-    // Read the template files
-    let layoutTemplate, contentTemplate;
-    try {
-      layoutTemplate = await fs.readFile(layoutPath, 'utf8');
-      contentTemplate = await fs.readFile(contentPath, 'utf8');
-    } catch (err) {
-      console.error('Template not found:', err);
-      return res.status(404).send(`Template not found: ${err.path}`);
-    }
-
-    // Insert content into layout
-    let template = layoutTemplate.replace('{{content}}', contentTemplate);
-    
-    // Set page-specific variables
-    const pageData = {
-      currentPage: page,
-      pageTitle: capitalizeFirstLetter(page),
-      isHome: page === 'home',
-      isResidential: page === 'residential',
-      isCommercial: page === 'commercial',
-      isIndustrial: page === 'industrial',
-      isContact: page === 'contact',
-      businessKey: business.website_key
-    };
-    
-    // Define all possible replacement fields
-    const replacements = {
-      '{{businessName}}': business.business_name || '',
-      '{{phone}}': business.phone || '',
-      '{{email}}': business.email || '',
-      '{{city}}': business.city || '',
-      '{{state}}': business.state || '',
-      '{{postal_code}}': business.postal_code || '',
-      '{{full_address}}': business.full_address || '',
-      '{{rating}}': business.rating || '0',
-      '{{reviews}}': business.reviews || '0',
-      '{{businessData}}': JSON.stringify(business),
-      '{{currentPage}}': pageData.currentPage,
-      '{{pageTitle}}': pageData.pageTitle,
-      '{{businessKey}}': pageData.businessKey
-    };
-
-    // Handle conditional classes for navigation
-    template = template.replace(/\{\{#if (is\w+)\}\}(.*?)\{\{\/if\}\}/g, (match, condition, content) => {
-      return pageData[condition] ? content : '';
-    });
-
-    // Replace placeholders with actual data
-    for (const [placeholder, value] of Object.entries(replacements)) {
-      template = template.replace(new RegExp(placeholder, 'g'), value);
-    }
-
-    // Send the populated template
-    res.send(template);
+    // Use the helper function to handle the HVAC business
+    return handleHvacBusiness(business, page, req, res);
   } catch (error) {
     console.error('Error serving HVAC website:', error);
     res.status(500).send('Server error');
@@ -645,3 +597,70 @@ app.get('/api/analytics/:businessId', async (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Helper function to handle HVAC business templates
+async function handleHvacBusiness(business, page, req, res) {
+  try {
+    // Determine template paths for HVAC
+    const layoutPath = path.join(__dirname, 'templates', 'hvac', 'shared', 'layout.html');
+    const contentPath = path.join(__dirname, 'templates', 'hvac', 'pages', `${page}.html`);
+    
+    // Read the template files
+    let layoutTemplate, contentTemplate;
+    try {
+      layoutTemplate = await fs.readFile(layoutPath, 'utf8');
+      contentTemplate = await fs.readFile(contentPath, 'utf8');
+    } catch (err) {
+      console.error('Template not found:', err);
+      return res.status(404).send(`Template not found: ${err.path}`);
+    }
+
+    // Insert content into layout
+    let template = layoutTemplate.replace('{{content}}', contentTemplate);
+    
+    // Set page-specific variables
+    const pageData = {
+      currentPage: page,
+      pageTitle: capitalizeFirstLetter(page),
+      isHome: page === 'home',
+      isResidential: page === 'residential',
+      isCommercial: page === 'commercial',
+      isIndustrial: page === 'industrial',
+      isContact: page === 'contact',
+      businessKey: business.website_key
+    };
+    
+    // Define all possible replacement fields
+    const replacements = {
+      '{{businessName}}': business.business_name || '',
+      '{{phone}}': business.phone || '',
+      '{{email}}': business.email || '',
+      '{{city}}': business.city || '',
+      '{{state}}': business.state || '',
+      '{{postal_code}}': business.postal_code || '',
+      '{{full_address}}': business.full_address || '',
+      '{{rating}}': business.rating || '0',
+      '{{reviews}}': business.reviews || '0',
+      '{{businessData}}': JSON.stringify(business),
+      '{{currentPage}}': pageData.currentPage,
+      '{{pageTitle}}': pageData.pageTitle,
+      '{{businessKey}}': pageData.businessKey
+    };
+
+    // Handle conditional classes for navigation
+    template = template.replace(/\{\{#if (is\w+)\}\}(.*?)\{\{\/if\}\}/g, (match, condition, content) => {
+      return pageData[condition] ? content : '';
+    });
+
+    // Replace placeholders with actual data
+    for (const [placeholder, value] of Object.entries(replacements)) {
+      template = template.replace(new RegExp(placeholder, 'g'), value);
+    }
+
+    // Send the populated template
+    return res.send(template);
+  } catch (error) {
+    console.error('Error serving HVAC website:', error);
+    return res.status(500).send('Server error');
+  }
+}
