@@ -22,10 +22,10 @@ app.get('/api/debug', async (req, res) => {
       FROM information_schema.tables 
       WHERE table_schema = 'public'
     `);
-    
+
     // Count records in businesses table
     const countResult = await db.query('SELECT COUNT(*) FROM businesses');
-    
+
     res.json({
       tables: tablesResult.rows,
       businessCount: countResult.rows[0].count,
@@ -46,17 +46,17 @@ app.get('/api/businesses', async (req, res) => {
       b.website_key
       FROM businesses b
     `;
-    
+
     // Add filtering logic
     const params = [];
     const conditions = [];
-    
+
     // Filter by state if provided
     if (req.query.state) {
       conditions.push(`LOWER(b.state) = LOWER($${params.length + 1})`);
       params.push(req.query.state);
     }
-    
+
     // Filter by pipeline stage if provided
     if (req.query.stage) {
       conditions.push(`
@@ -64,13 +64,20 @@ app.get('/api/businesses', async (req, res) => {
       `);
       params.push(req.query.stage);
     }
-    
+
+    //Filter by business type if provided
+    if (req.query.type) {
+      conditions.push(`LOWER(b.business_type) = LOWER($${params.length + 1})`);
+      params.push(req.query.type);
+    }
+
+
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ');
     }
-    
+
     query += ' ORDER BY b.business_name';
-    
+
     const result = await db.query(query, params);
     res.json(result.rows);
   } catch (err) {
@@ -84,12 +91,12 @@ app.post('/api/pipeline/:businessId', express.json(), async (req, res) => {
   try {
     const { businessId } = req.params;
     const { stage, notes } = req.body;
-    
+
     // Validate inputs
     if (!stage) {
       return res.status(400).json({ error: 'Stage is required' });
     }
-    
+
     // Insert new pipeline entry
     const result = await db.query(
       `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
@@ -97,7 +104,7 @@ app.post('/api/pipeline/:businessId', express.json(), async (req, res) => {
        RETURNING *`,
       [businessId, 'basic_template', stage, notes || '']
     );
-    
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error('Error updating pipeline:', err);
@@ -110,13 +117,13 @@ app.post('/api/website-view/:businessId', async (req, res) => {
   try {
     const { businessId } = req.params;
     const { sessionId, startTime, currentPage } = req.body || {};
-    
+
     // Get visitor information
     const visitorId = req.headers['x-session-id'] || sessionId || 'unknown';
     const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'];
     const referrer = req.headers['referer'] || '';
-    
+
     // Always record each view with timestamp and session data
     await db.query(
       `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
@@ -133,7 +140,7 @@ app.post('/api/website-view/:businessId', async (req, res) => {
        })
       ]
     );
-    
+
     // Record detailed analytics event for this view
     await db.query(
       `INSERT INTO analytics_events 
@@ -142,7 +149,7 @@ app.post('/api/website-view/:businessId', async (req, res) => {
        RETURNING id`,
       [businessId, req.headers['referer'] || 'direct', 'websiteView', visitorId, ipAddress, userAgent, referrer]
     );
-    
+
     res.json({ success: true, sessionId: visitorId });
   } catch (err) {
     console.error('Error recording website view:', err);
@@ -154,13 +161,13 @@ app.post('/api/website-view/:businessId', async (req, res) => {
 app.post('/api/analytics-event', async (req, res) => {
   try {
     const { businessId, eventType, pagePath, duration, scrollDepth, contactMethod, formType, sessionId, currentPage } = req.body;
-    
+
     // Get visitor info
     const visitorId = req.headers['x-session-id'] || sessionId || req.headers['x-visitor-id'] || 'unknown';
     const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'];
     const referrer = req.headers['referer'] || '';
-    
+
     // Insert analytics event
     await db.query(
       `INSERT INTO analytics_events 
@@ -179,7 +186,7 @@ app.post('/api/analytics-event', async (req, res) => {
          LIMIT 1`,
         [businessId]
       );
-      
+
       if (pipelineCheck.rows.length === 0) {
         await db.query(
           `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
@@ -193,12 +200,12 @@ app.post('/api/analytics-event', async (req, res) => {
         );
       }
     }
-    
+
     // For pageView events, update the analytics_summary
     if (eventType === 'pageView') {
       // Get today's date
       const today = new Date().toISOString().split('T')[0];
-      
+
       // Check if we have a summary for today
       const summaryCheck = await db.query(
         `SELECT id FROM analytics_summary 
@@ -206,7 +213,7 @@ app.post('/api/analytics-event', async (req, res) => {
          LIMIT 1`,
         [businessId, today]
       );
-      
+
       if (summaryCheck.rows.length > 0) {
         // Update existing summary
         await db.query(
@@ -232,11 +239,11 @@ app.post('/api/analytics-event', async (req, res) => {
         );
       }
     }
-    
+
     // For pageLeave events, update the average time on site
     if (eventType === 'pageLeave' && duration) {
       const today = new Date().toISOString().split('T')[0];
-      
+
       await db.query(
         `UPDATE analytics_summary 
          SET avg_time_on_site = (
@@ -246,7 +253,7 @@ app.post('/api/analytics-event', async (req, res) => {
         [businessId, today, duration]
       );
     }
-    
+
     res.json({ success: true });
   } catch (err) {
     console.error('Error recording analytics event:', err);
@@ -269,11 +276,11 @@ app.get('/api/businesses/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const result = await db.query('SELECT * FROM businesses WHERE id = $1', [id]);
-    
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Business not found' });
     }
-    
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error('Error fetching business:', err);
@@ -299,26 +306,26 @@ app.get('/api/pipeline/:businessId', async (req, res) => {
 app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) => {
   try {
     let { businessKey, page } = req.params;
-    
+
     // Default page is home
     page = page ? page.toLowerCase() : 'home';
-    
+
     // Valid pages
     const validPages = ['home', 'residential', 'commercial', 'industrial', 'contact'];
-    
+
     if (!validPages.includes(page)) {
       return res.status(404).send(`Invalid page: ${page}. Valid pages are: ${validPages.join(', ')}`);
     }
 
     console.log(`Looking for HVAC business with key=${businessKey}, page=${page}`);
-    
+
     // Direct query for HVAC business type - exactly match 'hvac'
     const queryResult = await db.query(
       "SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type = 'hvac'",
       [businessKey]
     );
     console.log(`Query results: ${queryResult.rows.length} rows found`);
-    
+
     if (queryResult.rows.length === 0) {
       // Try to find the business with any type for debugging
       console.log(`No business found with key=${businessKey} and any HVAC-related type, checking for any business with this key`);
@@ -326,7 +333,7 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
         'SELECT id, business_name, business_type, website_key FROM businesses WHERE LOWER(website_key) = LOWER($1)',
         [businessKey]
       );
-      
+
       // Add additional debugging for alternate result
       if (altResult.rows.length > 0) {
         console.log(`Business found with details:`, {
@@ -335,26 +342,37 @@ app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) =
           actualType: altResult.rows[0].business_type,
           key: altResult.rows[0].website_key
         });
-        
-        // If it's an HVAC business, proceed anyway
-        if (altResult.rows[0].business_type.toLowerCase() === 'hvac') {
-          console.log(`Found HVAC business with key=${businessKey}, proceeding with type: ${altResult.rows[0].business_type}`);
-          const business = await db.query('SELECT * FROM businesses WHERE id = $1', [altResult.rows[0].id]);
-          if (business.rows.length > 0) {
-            return handleHvacBusiness(business.rows[0], page, req, res);
-          }
-        }
-      }
-      
-      if (altResult.rows.length > 0) {
-        console.log(`Found business with key=${businessKey} but not an HVAC type:`, altResult.rows[0]);
-        return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" instead of expected: "hvac"`);
+
+        // Instead of showing error, record the view and show a friendly message
+        await db.query(
+          `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
+           VALUES ($1, $2, $3, $4)`,
+          [altResult.rows[0].id, 'basic_template', 'website viewed', 
+           JSON.stringify({
+             message: `View attempted but wrong business type`,
+             expectedType: 'hvac',
+             actualType: altResult.rows[0].business_type,
+             timestamp: new Date().toISOString()
+           })
+          ]
+        );
+
+        return res.status(404).send(`<html><head><title>Business Type Mismatch</title>
+          <style>body{font-family:Arial,sans-serif;margin:40px;line-height:1.6;}</style></head>
+          <body><h1>Business Found: ${altResult.rows[0].business_name}</h1>
+          <p>This business is registered as type: "${altResult.rows[0].business_type}" instead of "hvac".</p>
+          <p>Your visit has been recorded. We'll work on fixing this issue.</p>
+          <p><a href="/">Return to homepage</a></p></body></html>`);
       } else {
         console.log(`No business found with key=${businessKey}`);
-        return res.status(404).send(`Business not found with key: ${businessKey}`);
+        return res.status(404).send(`<html><head><title>Business Not Found</title>
+          <style>body{font-family:Arial,sans-serif;margin:40px;line-height:1.6;}</style></head>
+          <body><h1>Business Not Found</h1>
+          <p>We couldn't find a business with the key: ${businessKey}</p>
+          <p><a href="/">Return to homepage</a></p></body></html>`);
       }
     }
-    
+
     const business = queryResult.rows[0];
     // Use the helper function to handle the HVAC business
     return handleHvacBusiness(business, page, req, res);
@@ -375,43 +393,43 @@ app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], (req, res) => {
 app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], async (req, res) => {
   try {
     let { businessType, businessKey, page } = req.params;
-    
+
     // Convert to lowercase for case-insensitive matching
     businessType = businessType.toLowerCase();
-    
+
     // Default page is home
     page = page ? page.toLowerCase() : 'home';
-    
+
     // Valid business types and pages
     const validTypes = ['electricians', 'plumbers'];
     const validPages = ['home', 'residential', 'commercial', 'industrial', 'contact'];
-    
+
     if (!validTypes.includes(businessType)) {
       return res.status(404).send(`Invalid business type: ${businessType}. Valid types are: electricians, plumbers, hvac`);
     }
-    
+
     if (!validPages.includes(page)) {
       return res.status(404).send(`Invalid page: ${page}. Valid pages are: ${validPages.join(', ')}`);
     }
 
     // Get business data - remove 's' from type for other business types
     const businessTypeForQuery = businessType.slice(0, -1);
-    
+
     console.log(`Looking for business with key=${businessKey}, type=${businessTypeForQuery}, page=${page}`);
-    
+
     const queryResult = await db.query(
       'SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type = $2',
       [businessKey, businessTypeForQuery]
     );
     console.log(`Query results: ${queryResult.rows.length} rows found`);
-    
+
     if (queryResult.rows.length === 0) {
       // Try without type restriction for debugging
       const altResult = await db.query(
         'SELECT id, business_name, business_type, website_key FROM businesses WHERE LOWER(website_key) = LOWER($1)',
         [businessKey]
       );
-      
+
       if (altResult.rows.length > 0) {
         console.log(`Found business with key=${businessKey} but wrong type:`, altResult.rows[0]);
         return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" instead of expected: "${businessTypeForQuery}"`);
@@ -420,13 +438,13 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
         return res.status(404).send(`Business not found with key: ${businessKey}`);
       }
     }
-    
+
     const business = queryResult.rows[0];
-    
+
     // Determine template paths
     const layoutPath = path.join(__dirname, 'templates', businessTypeForQuery, 'shared', 'layout.html');
     const contentPath = path.join(__dirname, 'templates', businessTypeForQuery, 'pages', `${page}.html`);
-    
+
     // Read the template files
     let layoutTemplate, contentTemplate;
     try {
@@ -439,7 +457,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
 
     // Insert content into layout
     let template = layoutTemplate.replace('{{content}}', contentTemplate);
-    
+
     // Set page-specific variables
     const pageData = {
       currentPage: page,
@@ -451,7 +469,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
       isContact: page === 'contact',
       businessKey: business.website_key
     };
-    
+
     // Define all possible replacement fields
     const replacements = {
       '{{businessName}}': business.business_name || '',
@@ -498,18 +516,18 @@ app.get('/api/analytics/:businessId', async (req, res) => {
   try {
     const { businessId } = req.params;
     const { startDate, endDate } = req.query;
-    
+
     // Validate dates
     const dateConstraint = startDate && endDate 
       ? 'AND date BETWEEN $2 AND $3' 
       : '';
-    
+
     // Query params
     const params = [businessId];
     if (startDate && endDate) {
       params.push(startDate, endDate);
     }
-    
+
     // Get daily analytics
     const analyticsResult = await db.query(
       `SELECT * FROM analytics_summary 
@@ -517,7 +535,7 @@ app.get('/api/analytics/:businessId', async (req, res) => {
        ORDER BY date DESC`,
       params
     );
-    
+
     // Get event counts by type
     const eventsResult = await db.query(
       `SELECT event_type, COUNT(*) as count 
@@ -527,7 +545,7 @@ app.get('/api/analytics/:businessId', async (req, res) => {
        ORDER BY count DESC`,
       [businessId]
     );
-    
+
     // Get pipeline history
     const pipelineResult = await db.query(
       `SELECT stage, stage_date, notes 
@@ -536,7 +554,7 @@ app.get('/api/analytics/:businessId', async (req, res) => {
        ORDER BY stage_date DESC`,
       [businessId]
     );
-    
+
     // Get view session data from pipeline where stage is 'website viewed'
     const viewSessionsResult = await db.query(
       `SELECT stage_date, notes
@@ -545,7 +563,7 @@ app.get('/api/analytics/:businessId', async (req, res) => {
        ORDER BY stage_date DESC`,
       [businessId]
     );
-    
+
     // Process view session data to extract duration and other details
     const viewSessions = viewSessionsResult.rows.map(row => {
       try {
@@ -567,7 +585,7 @@ app.get('/api/analytics/:businessId', async (req, res) => {
         };
       }
     });
-    
+
     // Get page view statistics
     const pageViewsResult = await db.query(
       `SELECT 
@@ -579,7 +597,7 @@ app.get('/api/analytics/:businessId', async (req, res) => {
        ORDER BY count DESC`,
       [businessId]
     );
-    
+
     res.json({
       daily: analyticsResult.rows,
       events: eventsResult.rows,
@@ -604,7 +622,7 @@ async function handleHvacBusiness(business, page, req, res) {
     // Determine template paths for HVAC
     const layoutPath = path.join(__dirname, 'templates', 'hvac', 'shared', 'layout.html');
     const contentPath = path.join(__dirname, 'templates', 'hvac', 'pages', `${page}.html`);
-    
+
     // Read the template files
     let layoutTemplate, contentTemplate;
     try {
@@ -617,7 +635,7 @@ async function handleHvacBusiness(business, page, req, res) {
 
     // Insert content into layout
     let template = layoutTemplate.replace('{{content}}', contentTemplate);
-    
+
     // Set page-specific variables
     const pageData = {
       currentPage: page,
@@ -629,7 +647,7 @@ async function handleHvacBusiness(business, page, req, res) {
       isContact: page === 'contact',
       businessKey: business.website_key
     };
-    
+
     // Define all possible replacement fields
     const replacements = {
       '{{businessName}}': business.business_name || '',

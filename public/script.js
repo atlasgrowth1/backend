@@ -1,17 +1,19 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   loadStates();
-  loadBusinessesByPipeline();
+  await loadBusinessTypeOptions();
+  loadBusinesses();
 
   // Set up event listeners for filters
   document.getElementById('applyFilters').addEventListener('click', () => {
-    loadBusinessesByPipeline();
+    loadBusinesses();
   });
 
   document.getElementById('clearFilters').addEventListener('click', () => {
     document.getElementById('stateFilter').value = '';
-    loadBusinessesByPipeline();
+    document.getElementById('typeFilter').value = '';
+    loadBusinesses();
   });
-  
+
   // Set up event listener for updating pipeline
   const updatePipelineBtn = document.getElementById('updatePipelineBtn');
   if (updatePipelineBtn) {
@@ -41,17 +43,39 @@ async function loadStates() {
   }
 }
 
-async function loadBusinessesByPipeline() {
+async function loadBusinessTypeOptions() {
+  try {
+    const response = await fetch('/api/businessTypes');
+    const businessTypes = await response.json();
+
+    const typeFilter = document.getElementById('typeFilter');
+    businessTypes.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type;
+      option.textContent = type;
+      typeFilter.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error loading business types:', error);
+  }
+}
+
+async function loadBusinesses() {
   try {
     // Get filter values
-    const stateFilter = document.getElementById('stateFilter');
-    const state = stateFilter ? stateFilter.value : '';
+    const stateFilter = document.getElementById('stateFilter').value;
+    const typeFilter = document.getElementById('typeFilter').value;
 
-    // Build query string
     let url = '/api/businesses';
-    const params = [];
 
-    if (state) params.push(`state=${encodeURIComponent(state)}`);
+    // Add filters if selected
+    const params = [];
+    if (stateFilter) {
+      params.push(`state=${encodeURIComponent(stateFilter)}`);
+    }
+    if (typeFilter) {
+      params.push(`type=${encodeURIComponent(typeFilter)}`);
+    }
 
     if (params.length > 0) {
       url += '?' + params.join('&');
@@ -66,7 +90,7 @@ async function loadBusinessesByPipeline() {
 
     const businesses = await response.json();
     console.log('Loaded businesses:', businesses.length);
-    
+
     // Store all businesses for reference
     allBusinesses = businesses;
 
@@ -139,13 +163,13 @@ async function selectBusiness(businessId) {
   try {
     // Store the current business ID
     currentBusinessId = businessId;
-    
+
     // Fetch business details
     const response = await fetch(`/api/businesses/${businessId}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch business details: ${response.status}`);
     }
-    
+
     const business = await response.json();
     console.log('Loaded business details:', business);
 
@@ -165,17 +189,17 @@ async function selectBusiness(businessId) {
     document.getElementById('modalBusinessEmail').textContent = business.email || 'N/A';
     document.getElementById('modalBusinessAddress').textContent = 
       `${business.city || ''}, ${business.state || ''}`;
-      
+
     // Set up website URL and website key
     const businessType = business.business_type || 'electrician';
     const websiteKey = business.website_key || '';
-    
+
     // Update website key field
     const websiteKeyElement = document.getElementById('modalBusinessWebsiteKey');
     if (websiteKeyElement) {
       websiteKeyElement.textContent = websiteKey;
     }
-    
+
     // Set up the website link
     const websiteLink = document.getElementById('businessWebsiteLink');
     if (websiteLink && websiteKey) {
@@ -186,7 +210,7 @@ async function selectBusiness(businessId) {
       websiteLink.textContent = 'No website available';
       websiteLink.href = '#';
     }
-    
+
     // Find the matching business in our global array to get current stage
     const businessFromList = allBusinesses.find(b => b.id == businessId);
     if (businessFromList) {
@@ -213,22 +237,22 @@ async function loadBusinessActivity(businessId) {
     document.getElementById('lastViewed').textContent = '-';
     document.getElementById('activityCount').textContent = 'Loading...';
     document.getElementById('sessionHistoryTable').innerHTML = '<tr><td colspan="5" class="text-center">Loading session data...</td></tr>';
-    
+
     // Fetch analytics data
     const response = await fetch(`/api/analytics/${businessId}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch analytics data: ${response.status}`);
     }
-    
+
     const analyticsData = await response.json();
     console.log('Loaded analytics data:', analyticsData);
-    
+
     // Calculate totals from daily data
     let totalViews = 0;
     let totalUniqueVisitors = 0;
     let totalTimeSum = 0;
     let totalTimeSessions = 0;
-    
+
     if (analyticsData.daily && analyticsData.daily.length > 0) {
       analyticsData.daily.forEach(day => {
         totalViews += parseInt(day.total_views) || 0;
@@ -239,30 +263,30 @@ async function loadBusinessActivity(businessId) {
         }
       });
     }
-    
+
     // Process view sessions
     const viewSessions = analyticsData.viewSessions || [];
-    
+
     // Update summary stats
     document.getElementById('totalViews').textContent = totalViews || viewSessions.length;
     document.getElementById('uniqueVisitors').textContent = totalUniqueVisitors || countUniqueSessionIds(viewSessions);
-    
+
     const avgTime = totalTimeSessions > 0 ? Math.round(totalTimeSum / totalTimeSessions) : '-';
     document.getElementById('avgTimeOnSite').textContent = avgTime;
-    
+
     // Get last viewed date
     if (viewSessions.length > 0) {
       const lastSession = viewSessions[0]; // Sessions are ordered by date DESC
       const date = new Date(lastSession.date);
       document.getElementById('lastViewed').textContent = formatDate(date);
     }
-    
+
     // Update activity count
     document.getElementById('activityCount').textContent = viewSessions.length;
-    
+
     // Populate session history table
     populateSessionHistory(viewSessions);
-    
+
   } catch (error) {
     console.error('Error loading activity data:', error);
     document.getElementById('activityCount').textContent = 'Error';
@@ -273,13 +297,13 @@ async function loadBusinessActivity(businessId) {
 
 function countUniqueSessionIds(sessions) {
   const uniqueIds = new Set();
-  
+
   sessions.forEach(session => {
     if (session.sessionId) {
       uniqueIds.add(session.sessionId);
     }
   });
-  
+
   return uniqueIds.size;
 }
 
@@ -288,7 +312,7 @@ function formatDate(date) {
   const now = new Date();
   const diffTime = Math.abs(now - date);
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  
+
   if (diffDays === 0) {
     return 'Today';
   } else if (diffDays === 1) {
@@ -308,21 +332,21 @@ function formatDateTime(dateStr) {
 function populateSessionHistory(sessions) {
   const tableBody = document.getElementById('sessionHistoryTable');
   tableBody.innerHTML = '';
-  
+
   if (!sessions || sessions.length === 0) {
     tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No session data available</td></tr>';
     return;
   }
-  
+
   sessions.forEach(session => {
     try {
       const row = document.createElement('tr');
-      
+
       // Date/Time
       const dateCell = document.createElement('td');
       dateCell.textContent = formatDateTime(session.date);
       row.appendChild(dateCell);
-      
+
       // Duration
       const durationCell = document.createElement('td');
       // Try to extract duration from session data
@@ -332,7 +356,7 @@ function populateSessionHistory(sessions) {
           const sessionData = JSON.parse(session.notes);
           const startTime = sessionData.startTime;
           const timestamp = sessionData.timestamp;
-          
+
           if (startTime && timestamp) {
             const start = new Date(parseInt(startTime));
             const end = new Date(timestamp);
@@ -345,20 +369,20 @@ function populateSessionHistory(sessions) {
       } catch (e) {
         console.error('Failed to parse session duration:', e);
       }
-      
+
       durationCell.textContent = duration;
       row.appendChild(durationCell);
-      
+
       // Pages viewed
       const pagesCell = document.createElement('td');
       pagesCell.textContent = '1'; // Default to 1 page
       row.appendChild(pagesCell);
-      
+
       // Actions
       const actionsCell = document.createElement('td');
       actionsCell.textContent = 'Page view';
       row.appendChild(actionsCell);
-      
+
       // Source/Referrer
       const sourceCell = document.createElement('td');
       try {
@@ -372,7 +396,7 @@ function populateSessionHistory(sessions) {
         sourceCell.textContent = 'Direct';
       }
       row.appendChild(sourceCell);
-      
+
       tableBody.appendChild(row);
     } catch (e) {
       console.error('Error creating session row:', e);
@@ -385,7 +409,7 @@ async function updatePipelineStage() {
     alert('No business selected');
     return;
   }
-  
+
   const stageSelect = document.getElementById('pipelineStageSelect');
   if (!stageSelect) {
     console.error('Pipeline stage select element not found');
@@ -415,7 +439,7 @@ async function updatePipelineStage() {
       alert(`Successfully moved business to "${stage}" stage`);
 
       // Refresh the business pipelines
-      loadBusinessesByPipeline();
+      loadBusinesses();
 
       // Close the modal
       const modalElement = document.getElementById('businessDetailModal');
