@@ -53,20 +53,17 @@ async function loadBusinessesByPipeline() {
     const response = await fetch(url);
     const businesses = await response.json();
 
-    // Clear all business containers
-    document.getElementById('websiteCreatedBusinesses').innerHTML = '';
-    document.getElementById('websiteSentBusinesses').innerHTML = '';
-    document.getElementById('websiteViewedBusinesses').innerHTML = '';
-
     // Group businesses by pipeline stage
-    const createdBusinesses = businesses.filter(b => !b.current_stage || b.current_stage === 'website created');
-    const sentBusinesses = businesses.filter(b => b.current_stage === 'website sent');
-    const viewedBusinesses = businesses.filter(b => b.current_stage === 'website viewed');
+    const stages = {
+      'website created': businesses.filter(b => !b.current_stage || b.current_stage === 'website created'),
+      'website sent': businesses.filter(b => b.current_stage === 'website sent'),
+      'website viewed': businesses.filter(b => b.current_stage === 'website viewed')
+    };
 
     // Populate each stage column
-    populateStageColumn('websiteCreatedBusinesses', createdBusinesses);
-    populateStageColumn('websiteSentBusinesses', sentBusinesses);
-    populateStageColumn('websiteViewedBusinesses', viewedBusinesses);
+    populateStageColumn('websiteCreatedBusinesses', stages['website created']);
+    populateStageColumn('websiteSentBusinesses', stages['website sent']);
+    populateStageColumn('websiteViewedBusinesses', stages['website viewed']);
   } catch (error) {
     console.error('Error loading businesses:', error);
   }
@@ -75,17 +72,25 @@ async function loadBusinessesByPipeline() {
 function populateStageColumn(containerId, businesses) {
   const container = document.getElementById(containerId);
   
-  if (businesses.length === 0) {
+  if (!container) {
+    console.error(`Container #${containerId} not found`);
+    return;
+  }
+  
+  // Clear existing content
+  container.innerHTML = '';
+  
+  if (!businesses || businesses.length === 0) {
     container.innerHTML = '<p class="text-muted">No businesses in this stage</p>';
     return;
   }
 
   businesses.forEach(business => {
     const card = document.createElement('div');
-    card.className = 'card business-card';
+    card.className = 'card business-card mb-2';
     card.innerHTML = `
       <div class="card-body">
-        <h5 class="card-title">${business.business_name}</h5>
+        <h5 class="card-title">${business.business_name || 'Unnamed Business'}</h5>
         <p class="card-text">
           <small>${business.city || ''}, ${business.state || ''}</small><br>
           <small>Phone: ${business.phone || 'N/A'}</small><br>

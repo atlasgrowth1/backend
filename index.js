@@ -50,6 +50,33 @@ app.get('/api/businesses', async (req, res) => {
     const params = [];
     const conditions = [];
     
+    // Filter by state if provided
+    if (req.query.state) {
+      conditions.push(`LOWER(b.state) = LOWER($${params.length + 1})`);
+      params.push(req.query.state);
+    }
+    
+    // Filter by pipeline stage if provided
+    if (req.query.stage) {
+      conditions.push(`
+        (SELECT stage FROM website_pipeline WHERE business_id = b.id ORDER BY stage_date DESC LIMIT 1) = $${params.length + 1}
+      `);
+      params.push(req.query.stage);
+    }
+    
+    if (conditions.length > 0) {
+      query += ' WHERE ' + conditions.join(' AND ');
+    }
+    
+    query += ' ORDER BY b.business_name';
+    
+    const result = await db.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching businesses:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 // Update pipeline stage
 app.post('/api/pipeline/:businessId', express.json(), async (req, res) => {
@@ -106,34 +133,6 @@ app.post('/api/website-view/:businessId', async (req, res) => {
   }
 });
 
-    // Filter by state if provided
-    if (req.query.state) {
-      conditions.push(`LOWER(b.state) = LOWER($${params.length + 1})`);
-      params.push(req.query.state);
-    }
-    
-    // Filter by pipeline stage if provided
-    if (req.query.stage) {
-      conditions.push(`
-        (SELECT stage FROM website_pipeline WHERE business_id = b.id ORDER BY stage_date DESC LIMIT 1) = $${params.length + 1}
-      `);
-      params.push(req.query.stage);
-    }
-    
-    if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ');
-    }
-    
-    query += ' ORDER BY b.business_name';
-    
-    const result = await db.query(query, params);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching businesses:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
 // Get available states for filtering
 app.get('/api/states', async (req, res) => {
   try {
@@ -172,6 +171,76 @@ app.get('/api/pipeline/:businessId', async (req, res) => {
   } catch (err) {
     console.error('Error fetching pipeline:', err);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Business website route
+app.get('/:businessType/:businessKey', async (req, res) => {
+  try {
+    const { businessType, businessKey } = req.params;
+
+    // Valid business types
+    const validTypes = ['electricians', 'plumbers', 'hvac'];
+    if (!validTypes.includes(businessType)) {
+      return res.status(404).send('Invalid business type');
+    }
+
+    // Get business data
+    const { rows } = await db.query(
+      'SELECT * FROM businesses WHERE website_key = $1 AND business_type = $2',
+      [businessKey, businessType.slice(0, -1)] // Remove 's' from type
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).send('Business not found');
+    }
+
+    const business = rows[0];
+
+    // Read the template file
+    const fs = require('fs').promises;
+    const path = require('path');
+    let template;
+    
+    try {
+      template = await fs.readFile(
+        path.join(__dirname, 'templates', `${businessType.slice(0, -1)}.html`), 
+        'utf8'
+      );
+    } catch (err) {
+      console.error('Template not found:', err);
+      return res.status(404).send('Template not found');
+    }
+
+    // Replace placeholders with actual data
+    template = template
+      .replace('{{businessName}}', business.business_name)
+      .replace('{{businessData}}', JSON.stringify(business));
+
+    // Update pipeline if this is first view
+    try {
+      const pipelineRows = await db.query(
+        `SELECT COUNT(*) FROM website_pipeline 
+         WHERE business_id = $1 AND stage = 'website viewed'`,
+        [business.id]
+      );
+
+      if (parseInt(pipelineRows.rows[0].count) === 0) {
+        await db.query(
+          `INSERT INTO website_pipeline (business_id, template_id, stage, notes) 
+           VALUES ($1, $2, $3, $4)`,
+          [business.id, 'basic_template', 'website viewed', `First viewed on ${new Date().toISOString()}`]
+        );
+      }
+    } catch (err) {
+      console.error('Error updating pipeline:', err);
+    }
+
+    // Send the populated template
+    res.send(template);
+  } catch (error) {
+    console.error('Error serving website:', error);
+    res.status(500).send('Server error');
   }
 });
 
