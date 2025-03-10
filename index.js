@@ -310,8 +310,13 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     const validTypes = ['electricians', 'plumbers', 'hvac', 'hvacs'];
     const validPages = ['home', 'residential', 'commercial', 'industrial', 'contact'];
     
+    // Normalize business type (handle both 'hvac' and 'hvacs' as the same type)
+    if (businessType === 'hvacs') {
+      businessType = 'hvac';
+    }
+    
     if (!validTypes.includes(businessType)) {
-      return res.status(404).send(`Invalid business type: ${businessType}. Valid types are: electricians, plumbers, hvac, hvacs`);
+      return res.status(404).send(`Invalid business type: ${businessType}. Valid types are: electricians, plumbers, hvac`);
     }
     
     if (!validPages.includes(page)) {

@@ -210,3 +210,198 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{businessName}} - HVAC Services</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Custom Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+    }
+    .navbar {
+      background-color: #1a4b7c;
+    }
+    .navbar-brand, .nav-link {
+      color: white !important;
+    }
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1581578017093-cd30fce4eeb7?auto=format&fit=crop&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 100px 0;
+      margin-bottom: 40px;
+    }
+    .cta-section {
+      background-color: #f8f9fa;
+      padding: 40px 0;
+      margin: 40px 0;
+    }
+    footer {
+      background-color: #1a4b7c;
+      color: white;
+      padding: 40px 0;
+    }
+    .service-card {
+      transition: transform 0.3s;
+      margin-bottom: 20px;
+      height: 100%;
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/hvac/{{businessKey}}">{{businessName}}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link {{#if isHome}}active{{/if}}" href="/hvac/{{businessKey}}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{#if isResidential}}active{{/if}}" href="/hvac/{{businessKey}}/residential">Residential</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{#if isCommercial}}active{{/if}}" href="/hvac/{{businessKey}}/commercial">Commercial</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{#if isContact}}active{{/if}}" href="/hvac/{{businessKey}}/contact">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content will be injected here -->
+  {{content}}
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>{{businessName}}</h5>
+          <p>{{full_address}}</p>
+          <p>Phone: <a href="tel:{{phone}}" class="text-white">{{phone}}</a></p>
+          <p>Email: <a href="mailto:{{email}}" class="text-white">{{email}}</a></p>
+        </div>
+        <div class="col-md-4">
+          <h5>Our Services</h5>
+          <ul class="list-unstyled">
+            <li><a href="/hvac/{{businessKey}}/residential" class="text-white">Residential HVAC</a></li>
+            <li><a href="/hvac/{{businessKey}}/commercial" class="text-white">Commercial HVAC</a></li>
+            <li>Heating Installation & Repair</li>
+            <li>AC Installation & Repair</li>
+            <li>Maintenance Plans</li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>Service Areas</h5>
+          <p>{{city}}, {{state}} and surrounding areas</p>
+          <div class="mt-3">
+            <h5>Follow Us</h5>
+            <div class="d-flex gap-2">
+              <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="text-white"><i class="bi bi-twitter"></i></a>
+              <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col text-center">
+          <p>&copy; 2024 {{businessName}}. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Track page view
+    const sendAnalytics = async (eventType, duration = 0) => {
+      // Extract business ID from URL
+      const pathParts = window.location.pathname.split('/');
+      const businessType = pathParts[1]; // 'hvac'
+      const businessKey = pathParts[2]; // business key
+
+      try {
+        const response = await fetch('/api/businesses');
+        const businesses = await response.json();
+        const business = businesses.find(b => 
+          b.website_key === businessKey && 
+          b.business_type === 'hvac'
+        );
+
+        if (business) {
+          // Record analytics event
+          fetch('/api/analytics-event', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              businessId: business.id,
+              eventType,
+              pagePath: window.location.pathname,
+              duration,
+              sessionId: localStorage.getItem('visitorId') || Date.now().toString(),
+              currentPage: '{{currentPage}}'
+            })
+          });
+
+          // For initial page view, also send website view notification
+          if (eventType === 'pageView') {
+            fetch(`/api/website-view/${business.id}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                sessionId: localStorage.getItem('visitorId') || Date.now().toString(),
+                startTime: Date.now(),
+                currentPage: '{{currentPage}}'
+              })
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Analytics error:', error);
+      }
+    };
+
+    // Generate and store visitor ID
+    if (!localStorage.getItem('visitorId')) {
+      localStorage.setItem('visitorId', Date.now().toString());
+    }
+
+    // Track page view on load
+    const pageLoadTime = Date.now();
+    sendAnalytics('pageView');
+
+    // Track clicks on contact links
+    document.querySelectorAll('a[href^="tel:"], a[href^="mailto:"]').forEach(link => {
+      link.addEventListener('click', () => {
+        sendAnalytics('contactClick', Date.now() - pageLoadTime);
+      });
+    });
+
+    // Track time on page when user leaves
+    window.addEventListener('beforeunload', () => {
+      sendAnalytics('pageLeave', Date.now() - pageLoadTime);
+    });
+  </script>
+</body>
+</html>

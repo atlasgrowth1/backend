@@ -155,3 +155,147 @@
     trackFormSubmission('contact');
   }
 </script>
+<!-- Contact Page Hero -->
+<div class="hero text-center" style="padding: 80px 0;">
+  <div class="container">
+    <h1>Contact Us</h1>
+    <p class="lead">We're here to help with all your HVAC needs</p>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-6">
+      <h2>Get In Touch</h2>
+      <p>Need assistance with your heating, cooling, or ventilation system? Our team of experienced HVAC technicians is ready to help you with installations, repairs, maintenance, and more.</p>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5>Contact Information</h5>
+          <p><strong>Address:</strong><br>{{full_address}}</p>
+          <p><strong>Phone:</strong><br><a href="tel:{{phone}}">{{phone}}</a></p>
+          <p><strong>Email:</strong><br><a href="mailto:{{email}}">{{email}}</a></p>
+          <p><strong>Hours of Operation:</strong><br>
+            Monday-Friday: 8am-6pm<br>
+            Saturday: 9am-2pm<br>
+            Sunday: Closed<br>
+            <span class="text-danger">24/7 Emergency Service Available</span>
+          </p>
+        </div>
+      </div>
+      
+      <h4>Service Areas</h4>
+      <p>We proudly serve {{city}}, {{state}} and surrounding areas including:</p>
+      <div class="row">
+        <div class="col-md-6">
+          <ul>
+            <li>Neighboring Town 1</li>
+            <li>Neighboring Town 2</li>
+            <li>Neighboring Town 3</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul>
+            <li>Neighboring Town 4</li>
+            <li>Neighboring Town 5</li>
+            <li>And more!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Request Service or Free Estimate</h3>
+          <form id="contactForm">
+            <input type="hidden" id="businessId" value="{{businessData.id}}">
+            
+            <div class="mb-3">
+              <label for="name" class="form-label">Your Name *</label>
+              <input type="text" class="form-control" id="name" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address *</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone Number *</label>
+              <input type="tel" class="form-control" id="phone" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="serviceType" class="form-label">Service Needed</label>
+              <select class="form-select" id="serviceType">
+                <option>Heating Repair</option>
+                <option>AC Repair</option>
+                <option>New System Installation</option>
+                <option>Maintenance Service</option>
+                <option>Indoor Air Quality</option>
+                <option>Other</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label for="message" class="form-label">Message</label>
+              <textarea class="form-control" id="message" rows="4" placeholder="Please describe your HVAC needs or issues"></textarea>
+            </div>
+            
+            <div class="mb-3">
+              <label for="preferredDate" class="form-label">Preferred Service Date</label>
+              <input type="date" class="form-control" id="preferredDate">
+            </div>
+            
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="urgentService">
+                <label class="form-check-label" for="urgentService">
+                  This is urgent (same-day service requested)
+                </label>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Submit Request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Emergency Service Call-to-Action -->
+<div class="cta-section bg-danger text-white text-center">
+  <div class="container py-4">
+    <h3>24/7 Emergency HVAC Service</h3>
+    <p class="lead mb-3">Don't wait! Call us now for immediate assistance</p>
+    <a href="tel:{{phone}}" class="btn btn-light btn-lg">{{phone}}</a>
+  </div>
+</div>
+
+<script>
+  // Form submission handling
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Track form submission
+    fetch('/api/analytics-event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        businessId: {{businessData.id}},
+        eventType: 'formSubmission',
+        formType: 'contactForm',
+        pagePath: window.location.pathname,
+        sessionId: localStorage.getItem('visitorId'),
+        currentPage: 'contact'
+      })
+    });
+    
+    // Show success message
+    this.innerHTML = '<div class="alert alert-success"><h4>Thank you for contacting us!</h4><p>We\'ve received your request and will get back to you shortly. If your request is urgent, please call us directly at {{phone}}.</p></div>';
+  });
+</script>
