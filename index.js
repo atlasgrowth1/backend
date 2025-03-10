@@ -319,7 +319,14 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     }
 
     // Get business data
-    const businessTypeForQuery = businessType.slice(0, -1); // Remove 's' from type
+    let businessTypeForQuery;
+    
+    // Special handling for HVAC businesses
+    if (businessType === 'hvac' || businessType === 'hvacs') {
+      businessTypeForQuery = 'hvac';
+    } else {
+      businessTypeForQuery = businessType.slice(0, -1); // Remove 's' from type for other business types
+    }
     console.log(`Looking for business with key=${businessKey}, type=${businessTypeForQuery}, page=${page}`);
     
     const queryResult = await db.query(
