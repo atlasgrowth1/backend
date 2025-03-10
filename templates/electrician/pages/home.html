@@ -120,3 +120,371 @@
     }
   });
 </script>
+<!-- Hero Section -->
+<section class="bg-hero-pattern home-hero text-white py-24 md:py-36">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <span class="bg-blue-700 text-white text-sm font-bold py-1 px-3 rounded-full mb-6 inline-block shadow-lg">Premium Electrical Services</span>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Powering Your World With Excellence</h1>
+      <p class="text-xl mb-10 text-blue-50">Licensed, insured, and highly skilled electricians serving {{city}}, {{state}} and surrounding areas.</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-5">
+        <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="cta-btn bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-4 px-8 rounded-lg transition shadow-lg transform hover:-translate-y-1">
+          <i class="fas fa-clipboard-list mr-2"></i> Request a Free Quote
+        </a>
+        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-700 font-bold py-4 px-8 rounded-lg hover:bg-blue-50 transition shadow-lg transform hover:-translate-y-1">
+          <i class="fas fa-phone-alt mr-2"></i> Call Now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trust Badges Section -->
+<section class="py-12 bg-gradient-to-b from-blue-50 to-white">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap justify-center items-center gap-8 text-center">
+      <div class="bg-white p-6 rounded-xl shadow-md rating-card flex-1 max-w-xs border-t-4 border-yellow-400 transform transition hover:scale-105">
+        <div class="text-yellow-400 text-3xl mb-3 flex justify-center">
+          <!-- Star Rating -->
+          <span id="starRating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </span>
+        </div>
+        <p class="font-bold text-2xl text-gray-800 mb-1">{{rating}} Rating</p>
+        <p class="text-gray-600">Based on {{reviews}} verified reviews</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md rating-card flex-1 max-w-xs border-t-4 border-blue-500 transform transition hover:scale-105">
+        <div class="text-blue-600 text-3xl mb-3">
+          <i class="fas fa-certificate"></i>
+        </div>
+        <p class="font-bold text-2xl text-gray-800 mb-1">Licensed & Insured</p>
+        <p class="text-gray-600">Professional service guaranteed</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md rating-card flex-1 max-w-xs border-t-4 border-green-500 transform transition hover:scale-105">
+        <div class="text-green-600 text-3xl mb-3">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <p class="font-bold text-2xl text-gray-800 mb-1">24/7 Response</p>
+        <p class="text-gray-600">Available for emergencies</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-20">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Expert Electrical Services</h2>
+      <div class="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">Comprehensive electrical solutions for residential, commercial and industrial clients</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition service-card group">
+        <div class="text-blue-600 text-4xl mb-6 group-hover:text-yellow-500 transition-colors duration-300">
+          <i class="fas fa-home"></i>
+        </div>
+        <h3 class="font-bold text-2xl mb-4 text-gray-800">Residential Services</h3>
+        <p class="text-gray-600 mb-6">Complete electrical solutions for homeowners, from repairs to installations and upgrades.</p>
+        <ul class="text-gray-600 space-y-3 mb-8">
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Electrical repairs and troubleshooting</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Lighting design and installation</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Panel upgrades and replacements</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Outlet and switch installation</span>
+          </li>
+        </ul>
+        <a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="inline-block text-blue-600 font-medium hover:text-blue-800 transition group-hover:translate-x-2 transform duration-300 flex items-center">
+          Learn more <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+      
+      <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition service-card group">
+        <div class="text-blue-600 text-4xl mb-6 group-hover:text-yellow-500 transition-colors duration-300">
+          <i class="fas fa-building"></i>
+        </div>
+        <h3 class="font-bold text-2xl mb-4 text-gray-800">Commercial Services</h3>
+        <p class="text-gray-600 mb-6">Reliable electrical services for businesses to minimize downtime and maximize efficiency.</p>
+        <ul class="text-gray-600 space-y-3 mb-8">
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Commercial wiring and rewiring</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Emergency repair services</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Code compliance inspections</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Office lighting and power solutions</span>
+          </li>
+        </ul>
+        <a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="inline-block text-blue-600 font-medium hover:text-blue-800 transition group-hover:translate-x-2 transform duration-300 flex items-center">
+          Learn more <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+      
+      <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition service-card group">
+        <div class="text-blue-600 text-4xl mb-6 group-hover:text-yellow-500 transition-colors duration-300">
+          <i class="fas fa-industry"></i>
+        </div>
+        <h3 class="font-bold text-2xl mb-4 text-gray-800">Industrial Solutions</h3>
+        <p class="text-gray-600 mb-6">Specialized electrical services for factories, warehouses, and manufacturing facilities.</p>
+        <ul class="text-gray-600 space-y-3 mb-8">
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Industrial wiring and equipment</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Control system installation</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Machinery hookup and repair</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+            <span>Safety inspection and compliance</span>
+          </li>
+        </ul>
+        <a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="inline-block text-blue-600 font-medium hover:text-blue-800 transition group-hover:translate-x-2 transform duration-300 flex items-center">
+          Learn more <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+    </div>
+    
+    <div class="mt-16 text-center">
+      <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="inline-flex items-center justify-center bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 hover:scale-105 transform transition duration-300 shadow-md">
+        View All Services <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-20 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose {{businessName}}</h2>
+        <div class="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
+        <p class="text-xl text-gray-600">We're committed to providing the highest quality electrical services</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
+          <div class="bg-blue-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-certificate text-blue-600 text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-xl mb-3 text-gray-800 text-center">Licensed & Certified</h3>
+          <p class="text-gray-600 text-center">Our electricians are fully licensed with years of experience and ongoing professional training.</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
+          <div class="bg-blue-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-bolt text-blue-600 text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-xl mb-3 text-gray-800 text-center">Fast Response</h3>
+          <p class="text-gray-600 text-center">We understand that electrical issues can be urgent, so we prioritize quick response times.</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
+          <div class="bg-blue-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-shield-alt text-blue-600 text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-xl mb-3 text-gray-800 text-center">Safety First</h3>
+          <p class="text-gray-600 text-center">We follow all safety protocols and code requirements to ensure your electrical systems are safe.</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
+          <div class="bg-blue-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-dollar-sign text-blue-600 text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-xl mb-3 text-gray-800 text-center">Transparent Pricing</h3>
+          <p class="text-gray-600 text-center">We provide upfront, honest pricing with no hidden fees or surprise charges.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Recent Projects</h2>
+      <div class="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">Take a look at some of our recent electrical installations and projects</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+        <div class="relative overflow-hidden">
+          <img src="/api/placeholder/400/250" alt="Residential Rewiring" class="w-full h-64 object-cover transition duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+          <div class="absolute bottom-0 left-0 p-6">
+            <h3 class="text-white font-bold text-xl">Complete Home Rewiring</h3>
+            <p class="text-blue-100">Residential Project</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+        <div class="relative overflow-hidden">
+          <img src="/api/placeholder/400/250" alt="Commercial Lighting" class="w-full h-64 object-cover transition duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+          <div class="absolute bottom-0 left-0 p-6">
+            <h3 class="text-white font-bold text-xl">Office Lighting Upgrade</h3>
+            <p class="text-blue-100">Commercial Project</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+        <div class="relative overflow-hidden">
+          <img src="/api/placeholder/400/250" alt="Industrial Panel" class="w-full h-64 object-cover transition duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+          <div class="absolute bottom-0 left-0 p-6">
+            <h3 class="text-white font-bold text-xl">Control Panel Installation</h3>
+            <p class="text-blue-100">Industrial Project</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-12 text-center">
+      <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="inline-flex items-center justify-center px-6 py-3 border border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
+        View More Projects <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-20 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+      <div class="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">Read what our satisfied customers have to say about our electrical services</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div class="bg-white p-8 rounded-xl shadow-lg relative transition transform hover:-translate-y-2 duration-300">
+        <div class="absolute -top-5 -left-5 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-quote-left text-white"></i>
+        </div>
+        <div class="flex text-yellow-400 mb-4">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="text-gray-600 mb-6 italic">"The electricians were professional, on time, and did an excellent job rewiring our older home. They explained everything clearly and left the work area spotless."</p>
+        <div class="flex items-center">
+          <img src="/api/placeholder/40/40" alt="Customer" class="w-10 h-10 rounded-full mr-3">
+          <div>
+            <h4 class="font-semibold">Sarah Johnson</h4>
+            <p class="text-sm text-gray-500">Homeowner</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-8 rounded-xl shadow-lg relative transition transform hover:-translate-y-2 duration-300">
+        <div class="absolute -top-5 -left-5 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-quote-left text-white"></i>
+        </div>
+        <div class="flex text-yellow-400 mb-4">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="text-gray-600 mb-6 italic">"We had an emergency electrical issue at our restaurant, and they responded within an hour. Fixed the problem quickly with minimal disruption to our business."</p>
+        <div class="flex items-center">
+          <img src="/api/placeholder/40/40" alt="Customer" class="w-10 h-10 rounded-full mr-3">
+          <div>
+            <h4 class="font-semibold">Michael Davis</h4>
+            <p class="text-sm text-gray-500">Restaurant Owner</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-8 rounded-xl shadow-lg relative transition transform hover:-translate-y-2 duration-300">
+        <div class="absolute -top-5 -left-5 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-quote-left text-white"></i>
+        </div>
+        <div class="flex text-yellow-400 mb-4">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="text-gray-600 mb-6 italic">"Their team installed new lighting throughout our office complex. The project was completed on time, within budget, and looks fantastic. Highly recommend!"</p>
+        <div class="flex items-center">
+          <img src="/api/placeholder/40/40" alt="Customer" class="w-10 h-10 rounded-full mr-3">
+          <div>
+            <h4 class="font-semibold">Jennifer Taylor</h4>
+            <p class="text-sm text-gray-500">Office Manager</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-blue-700 text-white">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-6">Ready to Get Started?</h2>
+      <p class="text-xl text-blue-100 mb-8">Contact us today for a free estimate on your electrical project.</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-5">
+        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-700 font-bold py-4 px-8 rounded-lg hover:bg-blue-50 transition shadow-lg flex items-center justify-center transform hover:-translate-y-1 duration-300">
+          <i class="fas fa-phone-alt mr-2"></i> Call: {{phone}}
+        </a>
+        <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-yellow-500 text-blue-900 font-bold py-4 px-8 rounded-lg hover:bg-yellow-400 transition shadow-lg flex items-center justify-center transform hover:-translate-y-1 duration-300">
+          <i class="fas fa-envelope mr-2"></i> Contact Us
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Emergency Services Banner -->
+<section class="py-10 bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col md:flex-row items-center justify-between">
+      <div class="mb-6 md:mb-0">
+        <h3 class="text-white text-2xl font-bold">24/7 Emergency Electrical Services</h3>
+        <p class="text-blue-200 mt-2">Available around the clock for urgent electrical problems</p>
+      </div>
+      <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center transform hover:scale-105 duration-300">
+        <i class="fas fa-bolt mr-2"></i> Emergency Service: {{phone}}
+      </a>
+    </div>
+  </div>
+</section>
