@@ -1,190 +1,994 @@
-<!-- Hero Section -->
-<section class="bg-hero-pattern home-hero text-white py-20 md:py-32">
-  <div class="container mx-auto px-4">
-    <div class="max-w-3xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">Expert HVAC Services You Can Trust</h1>
-      <p class="text-xl mb-8">Professional heating, ventilation, and air conditioning services in {{city}}, {{state}} and surrounding areas.</p>
-      <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="/hvacs/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-yellow-400 text-blue-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-300 transition">
-          Request a Quote
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{businessName}} - HVAC Services</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
+  <style>
+    /* Custom CSS enhancements */
+    .hero-pattern {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmZmIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmOGZhZmMiPjwvcmVjdD4KPC9zdmc+');
+    }
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .gradient-text {
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      background-image: linear-gradient(45deg, #1e40af, #3b82f6);
+    }
+    .cta-button {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .cta-button:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      z-index: -1;
+    }
+    .cta-button:hover:after {
+      height: 100%;
+    }
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+  </style>
+</head>
+<body class="font-sans text-gray-800 antialiased bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md fixed w-full z-50" x-data="{ open: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="fas fa-snowflake text-blue-600 text-4xl mr-2"></i>
+            <span class="font-bold text-2xl text-blue-900">{{businessName}}</span>
+          </div>
+          <div class="hidden md:ml-10 md:flex md:space-x-8">
+            <a href="#" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
+              Home
+            </a>
+            <a href="#services" class="border-transparent text-gray-500 hover:border-blue-400 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">
+              Services
+            </a>
+            <a href="#about" class="border-transparent text-gray-500 hover:border-blue-400 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">
+              About Us
+            </a>
+            <a href="#testimonials" class="border-transparent text-gray-500 hover:border-blue-400 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">
+              Testimonials
+            </a>
+            <a href="#contact" class="border-transparent text-gray-500 hover:border-blue-400 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">
+              Contact
+            </a>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center">
+          <a href="tel:1-800-555-HVAC" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 transition duration-300 mr-4">
+            <i class="fas fa-phone-alt mr-2"></i> 1-800-555-HVAC
+          </a>
+          <a href="#contact" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition duration-300 cta-button">
+            <i class="fas fa-calendar-alt mr-2"></i> Schedule Service
+          </a>
+        </div>
+        <div class="-mr-2 flex items-center md:hidden">
+          <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path x-show="open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="open" class="md:hidden">
+      <div class="pt-2 pb-3 space-y-1">
+        <a href="#" class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 text-base font-medium">
+          Home
         </a>
-        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition">
-          <i class="fas fa-phone-alt mr-2"></i>Call Now
+        <a href="#services" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-blue-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+          Services
+        </a>
+        <a href="#about" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-blue-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+          About Us
+        </a>
+        <a href="#testimonials" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-blue-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+          Testimonials
+        </a>
+        <a href="#contact" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-blue-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+          Contact
+        </a>
+      </div>
+      <div class="pt-4 pb-3 border-t border-gray-200">
+        <div class="flex items-center px-4">
+          <div class="flex-shrink-0">
+            <i class="fas fa-headset text-blue-500 text-xl"></i>
+          </div>
+          <div class="ml-3">
+            <div class="text-base font-medium text-gray-800">Customer Support</div>
+            <div class="text-sm font-medium text-gray-500">1-800-555-HVAC</div>
+          </div>
+        </div>
+        <div class="mt-3 space-y-1">
+          <a href="#contact" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+            Schedule Service
+          </a>
+          <a href="#emergency" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+            Emergency Service
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="pt-20 hero-pattern">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:flex lg:items-center lg:justify-between py-16 md:py-20 lg:py-24">
+        <div class="lg:w-1/2">
+          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
+            <span class="gradient-text">Keeping You Comfortable</span> <br>
+            <span>All Year Round</span>
+          </h1>
+          <p class="mt-6 text-lg text-gray-600 max-w-3xl">
+            Your trusted partner for premium heating, ventilation, and air conditioning services. From emergency repairs to routine maintenance, we've got you covered 24/7.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row">
+            <a href="#contact" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-md text-white bg-blue-600 hover:bg-blue-700 transition duration-300 cta-button sm:mr-4 mb-4 sm:mb-0">
+              Schedule Service Now
+            </a>
+            <a href="#services" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 transition duration-300">
+              Explore Our Services
+            </a>
+          </div>
+          <div class="mt-10 flex items-center">
+            <div class="flex -space-x-2 mr-4">
+              <img class="h-10 w-10 rounded-full ring-2 ring-white" src="/api/placeholder/40/40" alt="Customer">
+              <img class="h-10 w-10 rounded-full ring-2 ring-white" src="/api/placeholder/40/40" alt="Customer">
+              <img class="h-10 w-10 rounded-full ring-2 ring-white" src="/api/placeholder/40/40" alt="Customer">
+            </div>
+            <div>
+              <div class="flex items-center">
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+              </div>
+              <p class="text-sm text-gray-600">Trusted by over <span class="font-semibold">2,500+</span> customers</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-12 lg:mt-0 lg:w-1/2 relative flex justify-center">
+          <div class="animate-float">
+            <img src="/api/placeholder/550/400" alt="HVAC Services" class="rounded-xl shadow-2xl max-w-full">
+            <div class="absolute -bottom-5 -left-5 bg-white rounded-lg shadow-lg px-4 py-3 flex items-center">
+              <div class="bg-green-100 rounded-full p-2 mr-3">
+                <i class="fas fa-tools text-green-600"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium">24/7 Emergency Service</p>
+                <p class="text-xs text-gray-500">Fast response time guaranteed</p>
+              </div>
+            </div>
+            <div class="absolute -top-5 -right-5 bg-white rounded-lg shadow-lg px-4 py-3">
+              <div class="flex items-center">
+                <div class="bg-blue-100 rounded-full p-2 mr-3">
+                  <i class="fas fa-certificate text-blue-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">100% Satisfaction</p>
+                  <p class="text-xs text-gray-500">Or your money back</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brands/Trust Signals -->
+  <div class="bg-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-center text-gray-500 text-sm font-medium uppercase tracking-wide mb-8">Trusted by the best brands in the industry</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center">
+        <div class="flex justify-center opacity-70 hover:opacity-100 transition-opacity">
+          <i class="fas fa-snowflake text-5xl text-gray-400"></i>
+        </div>
+        <div class="flex justify-center opacity-70 hover:opacity-100 transition-opacity">
+          <i class="fas fa-fire text-5xl text-gray-400"></i>
+        </div>
+        <div class="flex justify-center opacity-70 hover:opacity-100 transition-opacity">
+          <i class="fas fa-fan text-5xl text-gray-400"></i>
+        </div>
+        <div class="flex justify-center opacity-70 hover:opacity-100 transition-opacity">
+          <i class="fas fa-temperature-high text-5xl text-gray-400"></i>
+        </div>
+        <div class="flex justify-center opacity-70 hover:opacity-100 transition-opacity">
+          <i class="fas fa-wind text-5xl text-gray-400"></i>
+        </div>
+        <div class="flex justify-center opacity-70 hover:opacity-100 transition-opacity">
+          <i class="fas fa-sun text-5xl text-gray-400"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Section -->
+  <div id="services" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+          Our Premium HVAC Services
+        </h2>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+          We offer comprehensive solutions for all your heating, cooling, and ventilation needs.
+        </p>
+      </div>
+
+      <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Service Card 1 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden service-card transition duration-300">
+          <div class="p-6">
+            <div class="rounded-full w-12 h-12 flex items-center justify-center bg-blue-100 mb-5">
+              <i class="fas fa-snowflake text-blue-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Air Conditioning</h3>
+            <p class="text-gray-600 mb-4">Complete cooling solutions including installation, repair, and maintenance of all AC systems.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">New System Installation</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Emergency Repairs</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Preventative Maintenance</span>
+              </li>
+            </ul>
+            <a href="#contact" class="inline-block text-blue-600 hover:text-blue-800 font-medium">
+              Learn More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 2 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden service-card transition duration-300">
+          <div class="p-6">
+            <div class="rounded-full w-12 h-12 flex items-center justify-center bg-red-100 mb-5">
+              <i class="fas fa-fire text-red-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Heating Systems</h3>
+            <p class="text-gray-600 mb-4">Keep your home warm with our expert furnace and heat pump services.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Furnace Installation & Repair</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Heat Pump Services</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Annual Tune-ups</span>
+              </li>
+            </ul>
+            <a href="#contact" class="inline-block text-blue-600 hover:text-blue-800 font-medium">
+              Learn More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 3 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden service-card transition duration-300">
+          <div class="p-6">
+            <div class="rounded-full w-12 h-12 flex items-center justify-center bg-green-100 mb-5">
+              <i class="fas fa-wind text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Air Quality Solutions</h3>
+            <p class="text-gray-600 mb-4">Breathe easier with our indoor air quality improvement services.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Air Filtration Systems</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Duct Cleaning</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Humidity Control</span>
+              </li>
+            </ul>
+            <a href="#contact" class="inline-block text-blue-600 hover:text-blue-800 font-medium">
+              Learn More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 4 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden service-card transition duration-300">
+          <div class="p-6">
+            <div class="rounded-full w-12 h-12 flex items-center justify-center bg-purple-100 mb-5">
+              <i class="fas fa-tools text-purple-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Maintenance Plans</h3>
+            <p class="text-gray-600 mb-4">Preventative maintenance plans to keep your systems running efficiently.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Seasonal Tune-ups</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Priority Service</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Discounted Repairs</span>
+              </li>
+            </ul>
+            <a href="#contact" class="inline-block text-blue-600 hover:text-blue-800 font-medium">
+              Learn More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 5 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden service-card transition duration-300">
+          <div class="p-6">
+            <div class="rounded-full w-12 h-12 flex items-center justify-center bg-yellow-100 mb-5">
+              <i class="fas fa-bolt text-yellow-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Energy Efficiency</h3>
+            <p class="text-gray-600 mb-4">Energy-saving solutions to reduce your utility bills and carbon footprint.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Energy Audits</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Smart Thermostat Installation</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">High-Efficiency System Upgrades</span>
+              </li>
+            </ul>
+            <a href="#contact" class="inline-block text-blue-600 hover:text-blue-800 font-medium">
+              Learn More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 6 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden service-card transition duration-300">
+          <div class="p-6">
+            <div class="rounded-full w-12 h-12 flex items-center justify-center bg-teal-100 mb-5">
+              <i class="fas fa-home text-teal-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Commercial Services</h3>
+            <p class="text-gray-600 mb-4">Specialized HVAC solutions for businesses and commercial properties.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Commercial HVAC Installation</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Performance Optimization</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span class="text-sm">Service Contracts</span>
+              </li>
+            </ul>
+            <a href="#contact" class="inline-block text-blue-600 hover:text-blue-800 font-medium">
+              Learn More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Why Choose Us Section -->
+  <div id="about" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+        <div>
+          <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            Why Choose Our HVAC Services?
+          </h2>
+          <p class="mt-4 text-lg text-gray-600">
+            With over 25 years of experience in the industry, we've built our reputation on reliability, expertise, and exceptional customer service.
+          </p>
+
+          <div class="mt-10 space-y-8">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <i class="fas fa-certificate"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Certified Professionals</h3>
+                <p class="mt-2 text-gray-600">
+                  Our technicians are NATE-certified with extensive training and years of field experience.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <i class="fas fa-stopwatch"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Same-Day Service</h3>
+                <p class="mt-2 text-gray-600">
+                  We understand emergencies happen. That's why we offer prompt, same-day service when you need it most.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Upfront Pricing</h3>
+                <p class="mt-2 text-gray-600">
+                  No surprises or hidden fees. We provide detailed quotes before starting any work.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                  <i class="fas fa-hand-holding-heart"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">100% Satisfaction Guarantee</h3>
+                <p class="mt-2 text-gray-600">
+                  If you're not completely satisfied with our work, we'll make it right - guaranteed.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 lg:mt-0 rounded-xl overflow-hidden shadow-xl">
+          <img src="/api/placeholder/600/500" alt="Our HVAC Technicians" class="w-full">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials Section -->
+  <div id="testimonials" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+          What Our Customers Say
+        </h2>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+          Don't just take our word for it. Here's what our satisfied customers have to say about our services.
+        </p>
+      </div>
+
+      <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Testimonial 1 -->
+        <div class="bg-white rounded-xl shadow-lg p-8 testimonial-card transition duration-300">
+          <div class="flex items-center mb-6">
+            <img class="h-12 w-12 rounded-full" src="/api/placeholder/48/48" alt="Customer">
+            <div class="ml-4">
+              <h4 class="text-lg font-semibold">Sarah Johnson</h4>
+              <p class="text-gray-500 text-sm">Residential Customer</p>
+            </div>
+          </div>
+          <div class="flex text-yellow-400 mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="text-gray-600">
+            "I called with an emergency AC breakdown during the hottest day of summer. They arrived within an hour and fixed the problem quickly. Their technician was professional and explained everything clearly. Highly recommend!"
+          </p>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="bg-white rounded-xl shadow-lg p-8 testimonial-card transition duration-300">
+          <div class="flex items-center mb-6">
+            <img class="h-12 w-12 rounded-full" src="/api/placeholder/48/48" alt="Customer">
+            <div class="ml-4">
+              <h4 class="text-lg font-semibold">Michael Davis</h4>
+              <p class="text-gray-500 text-sm">Business Owner</p>
+            </div>
+          </div>
+          <div class="flex text-yellow-400 mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="text-gray-600">
+            "As a restaurant owner, having reliable HVAC is critical to our business. This team has maintained our systems for years and always provides exceptional service. Their maintenance plan has saved us thousands in potential repairs."
+          </p>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="bg-white rounded-xl shadow-lg p-8 testimonial-card transition duration-300">
+          <div class="flex items-center mb-6">
+            <img class="h-12 w-12 rounded-full" src="/api/placeholder/48/48" alt="Customer">
+            <div class="ml-4">
+              <h4 class="text-lg font-semibold">Jennifer Rodriguez</h4>
+              <p class="text-gray-500 text-sm">Homeowner</p>
+            </div>
+          </div>
+          <div class="flex text-yellow-400 mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+          </div>
+          <p class="text-gray-600">
+            "They installed a new high-efficiency heating system in our home last winter. Not only is it quieter than our old furnace, but our energy bills have decreased significantly. The installation team was clean, courteous, and completed the job on schedule."
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="#" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+          Read More Reviews <i class="fas fa-arrow-right ml-2"></i>
         </a>
       </div>
     </div>
   </div>
-</section>
 
-<!-- Rating Section -->
-<section class="py-12 bg-blue-50">
-  <div class="container mx-auto px-4">
-    <div class="flex flex-col md:flex-row justify-center items-center gap-8 text-center">
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <div class="text-yellow-400 text-2xl mb-2">
-          <!-- Star Rating -->
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star-half-alt"></i>
-        </div>
-        <p class="font-bold text-xl">{{rating}} Rating</p>
-        <p class="text-gray-600">Based on {{reviews}} reviews</p>
-      </div>
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <div class="text-blue-600 text-2xl mb-2">
-          <i class="fas fa-certificate"></i>
-        </div>
-        <p class="font-bold text-xl">Licensed & Insured</p>
-        <p class="text-gray-600">Professional service guaranteed</p>
-      </div>
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <div class="text-blue-600 text-2xl mb-2">
-          <i class="fas fa-bolt"></i>
-        </div>
-        <p class="font-bold text-xl">Fast Response</p>
-        <p class="text-gray-600">24/7 emergency service</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Services Section -->
-<section id="services" class="py-16">
-  <div class="container mx-auto px-4">
-    <h2 class="text-3xl font-bold text-center mb-12">Our HVAC Services</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Heating Services -->
-      <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-        <div class="text-red-500 text-3xl mb-4">
-          <i class="fas fa-fire"></i>
-        </div>
-        <h3 class="font-bold text-xl mb-2">Heating Services</h3>
-        <p class="text-gray-600 mb-4">Keep your home or business warm with our professional heating services.</p>
-        <ul class="text-gray-600 space-y-2">
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Furnace installation & repair</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Heat pump services</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Boiler maintenance</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Heating system tune-ups</li>
-        </ul>
-      </div>
-
-      <!-- Cooling Services -->
-      <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-        <div class="text-blue-500 text-3xl mb-4">
-          <i class="fas fa-snowflake"></i>
-        </div>
-        <h3 class="font-bold text-xl mb-2">Cooling Services</h3>
-        <p class="text-gray-600 mb-4">Stay cool with our expert air conditioning installation and repair services.</p>
-        <ul class="text-gray-600 space-y-2">
-          <li><i class="fas fa-check text-green-500 mr-2"></i>AC installation & replacement</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>AC repair & maintenance</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Ductless mini-split systems</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Commercial cooling</li>
-        </ul>
-      </div>
-
-      <!-- Air Quality Services -->
-      <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-        <div class="text-green-500 text-3xl mb-4">
-          <i class="fas fa-wind"></i>
-        </div>
-        <h3 class="font-bold text-xl mb-2">Air Quality Services</h3>
-        <p class="text-gray-600 mb-4">Breathe easier with our indoor air quality solutions.</p>
-        <ul class="text-gray-600 space-y-2">
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Air filtration systems</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Duct cleaning & repair</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Humidifiers & dehumidifiers</li>
-          <li><i class="fas fa-check text-green-500 mr-2"></i>Ventilation improvements</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Why Choose Us Section -->
-<section class="py-16 bg-gray-100">
-  <div class="container mx-auto px-4">
-    <h2 class="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Left Column -->
-      <div>
-        <div class="flex items-start mb-6">
-          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
-            <i class="fas fa-tools"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2">Experienced Technicians</h3>
-            <p class="text-gray-600">Our team consists of certified professionals with years of experience in HVAC installation, maintenance, and repair.</p>
-          </div>
-        </div>
-        <div class="flex items-start mb-6">
-          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
-            <i class="fas fa-clock"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2">Prompt Service</h3>
-            <p class="text-gray-600">We understand that HVAC issues can't wait. Our team responds quickly to all service calls.</p>
-          </div>
-        </div>
-        <div class="flex items-start">
-          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
-            <i class="fas fa-dollar-sign"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2">Competitive Pricing</h3>
-            <p class="text-gray-600">Quality HVAC services at fair and transparent prices. We provide detailed estimates before starting any work.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Column -->
-      <div>
-        <div class="flex items-start mb-6">
-          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
-            <i class="fas fa-medal"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2">Quality Equipment</h3>
-            <p class="text-gray-600">We use only high-quality, energy-efficient equipment and parts from trusted manufacturers.</p>
-          </div>
-        </div>
-        <div class="flex items-start mb-6">
-          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
-            <i class="fas fa-thumbs-up"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2">Satisfaction Guaranteed</h3>
-            <p class="text-gray-600">Your satisfaction is our priority. We're not happy until you're happy with our service.</p>
-          </div>
-        </div>
-        <div class="flex items-start">
-          <div class="bg-blue-600 p-3 rounded-full text-white mr-4">
-            <i class="fas fa-home"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2">Local Expertise</h3>
-            <p class="text-gray-600">As a local business, we understand the specific HVAC needs of homes and businesses in {{city}}.</p>
+  <!-- CTA Section -->
+  <div id="emergency" class="bg-blue-700 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl shadow-xl overflow-hidden">
+        <div class="px-6 py-12 md:p-12 lg:px-16 lg:py-16">
+          <div class="md:grid md:grid-cols-2 md:gap-8 items-center">
+            <div>
+              <h2 class="text-3xl font-extrabold text-white">
+                24/7 Emergency HVAC Service
+              </h2>
+              <p class="mt-4 text-lg text-blue-100">
+                HVAC emergencies don't wait for business hours. That's why we're available around the clock to restore your comfort when you need it most.
+              </p>
+              <div class="mt-8 flex flex-col md:flex-row">
+                <a href="tel:1-800-555-HVAC" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 transition shadow-lg cta-button">
+                  <i class="fas fa-phone-alt mr-2"></i> Call Now: 1-800-555-HVAC
+                </a>
+              </div>
+            </div>
+            <div class="mt-10 md:mt-0 flex justify-center">
+              <div class="relative animate-float">
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="h-32 w-32 rounded-full bg-blue-500 bg-opacity-30 animate-ping"></div>
+                </div>
+                <div class="relative flex h-32 w-32 items-center justify-center rounded-full bg-white">
+                  <i class="fas fa-bolt text-blue-600 text-5xl"></i>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- Call to Action -->
-<section class="py-16 bg-blue-600 text-white">
-  <div class="container mx-auto px-4 text-center">
-    <h2 class="text-3xl font-bold mb-4">Ready to Experience Superior HVAC Service?</h2>
-    <p class="text-xl mb-8 max-w-2xl mx-auto">Contact us today to schedule a service appointment or to request a free estimate for your heating and cooling needs.</p>
-    <div class="flex flex-col sm:flex-row justify-center gap-4">
-      <a href="/hvacs/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-white text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition">
-        Contact Us Today
+  <!-- Contact Section -->
+  <div id="contact" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-2 lg:gap-16">
+        <div>
+          <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            Contact Us Today
+          </h2>
+          <p class="mt-4 text-lg text-gray-600">
+            Ready to schedule service or have questions about our HVAC solutions? Reach out to our friendly team today.
+          </p>
+
+          <form class="mt-8 space-y-6">
+            <div class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6">
+              <div>
+                <label for="first-name" class="block text-sm font-medium text-gray-700">First name</label>
+                <div class="mt-1">
+                  <input type="text" name="first-name" id="first-name" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md">
+                </div>
+              </div>
+              <div>
+                <label for="last-name" class="block text-sm font-medium text-gray-700">Last name</label>
+                <div class="mt-1">
+                  <input type="text" name="last-name" id="last-name" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md">
+                </div>
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <div class="mt-1">
+                  <input id="email" name="email" type="email" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md">
+                </div>
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                <div class="mt-1">
+                  <input type="text" name="phone" id="phone" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md">
+                </div>
+              </div>
+              <div class="sm:col-span-2">
+                <label for="service" class="block text-sm font-medium text-gray-700">Service Needed</label>
+                <div class="mt-1">
+                  <select id="service" name="service" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md">
+                    <option value="">Please select</option>
+                    <option value="ac-repair">Air Conditioning Repair</option>
+                    <option value="ac-install">Air Conditioning Installation</option>
+                    <option value="heating-repair">Heating Repair</option>
+                    <option value="heating-install">Heating Installation</option>
+                    <option value="maintenance">Maintenance</option>
+                    <option value="air-quality">Air Quality</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="sm:col-span-2">
+                <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                <div class="mt-1">
+                  <textarea id="message" name="message" rows="4" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md"></textarea>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button type="submit" class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
+                Submit Request
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-12 lg:mt-0">
+          <div class="rounded-xl overflow-hidden shadow-xl h-96 mb-8">
+            <!-- Replace with your Google Maps embed code -->
+            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+              <div class="text-gray-600">
+                <i class="fas fa-map-marker-alt text-5xl mb-4"></i>
+                <p class="text-center">Map Location</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-8 shadow-md">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Our Information</h3>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <i class="fas fa-map-marker-alt text-blue-600"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-gray-700">123 Cooling Avenue, Suite 456<br>Comfort City, State 78901</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <i class="fas fa-phone-alt text-blue-600"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-gray-700">1-800-555-HVAC</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <i class="fas fa-envelope text-blue-600"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-gray-700">info@yourhvaccompany.com</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <i class="fas fa-clock text-blue-600"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-gray-700">
+                    <span class="font-medium">Hours:</span><br>
+                    Monday-Friday: 8am-7pm<br>
+                    Saturday: 9am-5pm<br>
+                    Sunday: Emergency Service Only
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6">
+              <h4 class="text-sm font-semibold text-gray-900 mb-3">Follow Us:</h4>
+              <div class="flex space-x-4">
+                <a href="#" class="text-gray-600 hover:text-blue-600">
+                  <i class="fab fa-facebook-f text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">
+                  <i class="fab fa-twitter text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">
+                  <i class="fab fa-instagram text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">
+                  <i class="fab fa-youtube text-xl"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center mb-6">
+            <i class="fas fa-snowflake text-blue-400 text-3xl mr-2"></i>
+            <span class="font-bold text-xl">{{businessName}}</span>
+          </div>
+          <p class="text-gray-400 mb-6">
+            Your trusted partner for premium heating, ventilation, and air conditioning services for over 25 years.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-6">Quick Links</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+            <li><a href="#services" class="text-gray-400 hover:text-white">Services</a></li>
+            <li><a href="#about" class="text-gray-400 hover:text-white">About Us</a></li>
+            <li><a href="#testimonials" class="text-gray-400 hover:text-white">Testimonials</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-white">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-6">Services</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white">Air Conditioning</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Heating Systems</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Air Quality Solutions</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Maintenance Plans</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Commercial Services</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-6">Contact</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+              <span>123 Cooling Avenue, Suite 456<br>Comfort City, State 78901</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone-alt mr-3"></i>
+              <span>1-800-555-HVAC</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-3"></i>
+              <span>info@yourhvaccompany.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-8 mt-8 border-t border-gray-800 text-center text-gray-400">
+        <p class="text-sm">
+          &copy; 2025 {{businessName}}. All rights reserved. Licensed and Insured HVAC Contractor.
+        </p>
+        <div class="flex justify-center space-x-6 mt-4">
+          <a href="#" class="text-xs text-gray-500 hover:text-gray-300">Privacy Policy</a>
+          <a href="#" class="text-xs text-gray-500 hover:text-gray-300">Terms of Service</a>
+          <a href="#" class="text-xs text-gray-500 hover:text-gray-300">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Action Button -->
+  <div class="fixed bottom-6 right-6">
+    <div class="flex flex-col items-end space-y-4">
+      <a href="tel:1-800-555-HVAC" class="flex items-center justify-center h-14 w-14 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-colors">
+        <i class="fas fa-phone-alt"></i>
       </a>
-      <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-yellow-400 text-blue-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-300 transition">
-        <i class="fas fa-phone-alt mr-2"></i>{{phone}}
+      <a href="#contact" class="flex items-center justify-center h-14 w-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors">
+        <i class="fas fa-calendar-alt"></i>
       </a>
     </div>
   </div>
-</section>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" class="fixed bottom-6 left-6 flex items-center justify-center h-12 w-12 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-700 transition-colors opacity-0 invisible" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script>
+    // Back to top button visibility
+    window.onscroll = function() {
+      const backToTopButton = document.getElementById('back-to-top');
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        backToTopButton.classList.remove('opacity-0', 'invisible');
+        backToTopButton.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopButton.classList.remove('opacity-100', 'visible');
+        backToTopButton.classList.add('opacity-0', 'invisible');
+      }
+    };
+
+    // Replace placeholder text
+    document.addEventListener('DOMContentLoaded', function() {
+      const businessName = "Arctic Air HVAC";
+      const elements = document.querySelectorAll('*');
+      elements.forEach(element => {
+        if (element.childNodes && element.childNodes.length > 0) {
+          element.childNodes.forEach(node => {
+            if (node.nodeType === 3) { // Text node
+              node.textContent = node.textContent.replace(/{{businessName}}/g, businessName);
+            }
+          });
+        }
+      });
+      document.title = document.title.replace(/{{businessName}}/, businessName);
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Form validation
+    const contactForm = document.querySelector('form');
+    if (contactForm) {
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Simple validation
+        let isValid = true;
+        const requiredFields = contactForm.querySelectorAll('input[type="text"], input[type="email"], select, textarea');
+
+        requiredFields.forEach(field => {
+          if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add('border-red-500');
+
+            // Add error message if it doesn't exist
+            const errorElement = field.parentElement.querySelector('.error-message');
+            if (!errorElement) {
+              const error = document.createElement('p');
+              error.className = 'text-red-500 text-xs mt-1 error-message';
+              error.textContent = 'This field is required';
+              field.parentElement.appendChild(error);
+            }
+          } else {
+            field.classList.remove('border-red-500');
+            const errorElement = field.parentElement.querySelector('.error-message');
+            if (errorElement) {
+              errorElement.remove();
+            }
+          }
+        });
+
+        if (isValid) {
+          // In a real application, this would submit the form to your backend
+          // For demo purposes, show a success message
+          contactForm.innerHTML = `
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+              <strong class="font-bold">Success!</strong>
+              <span class="block sm:inline"> Your service request has been submitted. We'll contact you shortly!</span>
+            </div>
+          `;
+        }
+      });
+    }
+
+    // Seasonal offers popup (appears after 5 seconds)
+    setTimeout(() => {
+      const popup = document.createElement('div');
+      popup.className = 'fixed inset-0 flex items-center justify-center z-50';
+      popup.innerHTML = `
+        <div class="fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 relative z-10">
+          <button id="close-popup" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="text-center">
+            <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-percentage text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Special Offer!</h3>
+            <p class="text-gray-600 mb-4">Get 15% off your first service call when you schedule online today!</p>
+            <a href="#contact" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+              Claim Offer Now
+            </a>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(popup);
+
+      document.getElementById('close-popup').addEventListener('click', () => {
+        popup.remove();
+      });
+
+      // Close on clicking outside
+      popup.querySelector('.fixed.inset-0').addEventListener('click', () => {
+        popup.remove();
+      });
+
+      // Also close when clicking the claim offer button
+      popup.querySelector('a[href="#contact"]').addEventListener('click', () => {
+        popup.remove();
+      });
+    }, 5000);
+
+    // Mobile menu functionality is handled by Alpine.js
+  </script>
+</body>
+</html>
