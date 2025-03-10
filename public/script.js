@@ -38,7 +38,8 @@ async function loadStates() {
 async function loadBusinessesByPipeline() {
   try {
     // Get filter values
-    const state = document.getElementById('stateFilter').value;
+    const stateFilter = document.getElementById('stateFilter');
+    const state = stateFilter ? stateFilter.value : '';
     
     // Build query string
     let url = '/api/businesses';
@@ -50,8 +51,15 @@ async function loadBusinessesByPipeline() {
       url += '?' + params.join('&');
     }
 
+    console.log('Fetching businesses from:', url);
     const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch businesses: ${response.status}`);
+    }
+    
     const businesses = await response.json();
+    console.log('Loaded businesses:', businesses.length);
 
     // Group businesses by pipeline stage
     const stages = {
@@ -76,6 +84,8 @@ function populateStageColumn(containerId, businesses) {
     console.error(`Container #${containerId} not found`);
     return;
   }
+  
+  console.log(`Populating ${containerId} with ${businesses ? businesses.length : 0} businesses`);
   
   // Clear existing content
   container.innerHTML = '';
@@ -115,6 +125,8 @@ async function selectBusiness(id) {
   currentBusinessId = id;
 
   try {
+    console.log('Selected business ID:', id);
+    
     // Make sure modal element exists
     const modalElement = document.getElementById('businessModal');
     if (!modalElement) {
@@ -129,11 +141,19 @@ async function selectBusiness(id) {
 
     // Fetch business details
     const businessResponse = await fetch(`/api/businesses/${id}`);
+    if (!businessResponse.ok) {
+      throw new Error(`Failed to fetch business: ${businessResponse.status}`);
+    }
     const business = await businessResponse.json();
+    console.log('Business data:', business);
 
     // Fetch pipeline data
     const pipelineResponse = await fetch(`/api/pipeline/${id}`);
+    if (!pipelineResponse.ok) {
+      throw new Error(`Failed to fetch pipeline: ${pipelineResponse.status}`);
+    }
     const pipeline = await pipelineResponse.json();
+    console.log('Pipeline data:', pipeline);
     
     // Ensure all DOM elements exist before trying to update them
     const elements = {
@@ -147,11 +167,17 @@ async function selectBusiness(id) {
     };
     
     // Check if all elements exist
+    let missingElements = [];
     for (const [key, element] of Object.entries(elements)) {
       if (!element) {
-        console.error(`Element '${key}' not found`);
-        return;
+        missingElements.push(key);
       }
+    }
+    
+    if (missingElements.length > 0) {
+      console.error(`Missing elements: ${missingElements.join(', ')}`);
+      alert('Error displaying business details. See console for more information.');
+      return;
     }
 
     // Update the UI with business details
