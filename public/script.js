@@ -1,295 +1,334 @@
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Load businesses and populate the pipeline view
-  loadBusinesses();
 
-  // Load states for filtering
+document.addEventListener('DOMContentLoaded', function() {
   loadStates();
+  loadBusinessesByPipeline();
 
   // Set up event listeners for filters
-  document.getElementById('applyFilters').addEventListener('click', loadBusinesses);
-  document.getElementById('clearFilters').addEventListener('click', clearFilters);
+  document.getElementById('applyFilters').addEventListener('click', () => {
+    loadBusinessesByPipeline();
+  });
+
+  document.getElementById('clearFilters').addEventListener('click', () => {
+    document.getElementById('stateFilter').value = '';
+    loadBusinessesByPipeline();
+  });
 });
 
-// Function to load businesses based on filters
-function loadBusinesses() {
-  // Get filter values
-  const stateFilter = document.getElementById('stateFilter').value;
+let currentBusinessId = null;
+let businessModal = null;
 
-  // Build query parameters
-  let queryParams = [];
-  if (stateFilter) {
-    queryParams.push(`state=${encodeURIComponent(stateFilter)}`);
-  }
+async function loadStates() {
+  try {
+    const response = await fetch('/api/states');
+    const states = await response.json();
 
-  const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+    const stateFilter = document.getElementById('stateFilter');
 
-  // Fetch businesses from API
-  fetch(`/api/businesses${queryString}`)
-    .then(response => response.json())
-    .then(businesses => {
-      // Clear existing businesses in each stage
-      document.getElementById('websiteCreatedBusinesses').innerHTML = '';
-      document.getElementById('websiteSentBusinesses').innerHTML = '';
-      document.getElementById('websiteViewedBusinesses').innerHTML = '';
-
-      // Group businesses by pipeline stage
-      const stages = {
-        'website created': [],
-        'website sent': [],
-        'website viewed': []
-      };
-
-      // Put businesses in proper stage or default to 'website created'
-      businesses.forEach(business => {
-        const stage = business.current_stage || 'website created';
-        if (stages[stage]) {
-          stages[stage].push(business);
-        } else {
-          stages['website created'].push(business);
-        }
-      });
-
-      // Populate each stage column
-      renderBusinessesInStage('websiteCreatedBusinesses', stages['website created']);
-      renderBusinessesInStage('websiteSentBusinesses', stages['website sent']);
-      renderBusinessesInStage('websiteViewedBusinesses', stages['website viewed']);
-    })
-    .catch(error => {
-      console.error('Error fetching businesses:', error);
+    states.forEach(state => {
+      const option = document.createElement('option');
+      option.value = state;
+      option.textContent = state;
+      stateFilter.appendChild(option);
     });
+  } catch (error) {
+    console.error('Error loading states:', error);
+  }
 }
 
-// Render businesses in a specific stage
-function renderBusinessesInStage(elementId, businesses) {
-  const container = document.getElementById(elementId);
+async function loadBusinessesByPipeline() {
+  try {
+    // Get filter values
+    const state = document.getElementById('stateFilter').value;
+    
+    // Build query string
+    let url = '/api/businesses';
+    const params = [];
+
+    if (state) params.push(`state=${encodeURIComponent(state)}`);
+
+    if (params.length > 0) {
+      url += '?' + params.join('&');
+    }
+
+    const response = await fetch(url);
+    const businesses = await response.json();
+
+    // Clear all business containers
+    document.getElementById('websiteCreatedBusinesses').innerHTML = '';
+    document.getElementById('websiteSentBusinesses').innerHTML = '';
+    document.getElementById('websiteViewedBusinesses').innerHTML = '';
+
+    // Group businesses by pipeline stage
+    const createdBusinesses = businesses.filter(b => !b.current_stage || b.current_stage === 'website created');
+    const sentBusinesses = businesses.filter(b => b.current_stage === 'website sent');
+    const viewedBusinesses = businesses.filter(b => b.current_stage === 'website viewed');
+
+    // Populate each stage column
+    populateStageColumn('websiteCreatedBusinesses', createdBusinesses);
+    populateStageColumn('websiteSentBusinesses', sentBusinesses);
+    populateStageColumn('websiteViewedBusinesses', viewedBusinesses);
+  } catch (error) {
+    console.error('Error loading businesses:', error);
+  }
+}
+
+function populateStageColumn(containerId, businesses) {
+  const container = document.getElementById(containerId);
+  
+  if (businesses.length === 0) {
+    container.innerHTML = '<p class="text-muted">No businesses in this stage</p>';
+    return;
+  }
 
   businesses.forEach(business => {
     const card = document.createElement('div');
     card.className = 'card business-card';
-    card.dataset.businessId = business.id;
-
-    // Phone type display
-    let phoneType = '';
-    if (business.phone_type) {
-      try {
-        // Try to parse the phone_type if it's a string representation of JSON
-        if (typeof business.phone_type === 'string') {
-          const parsedType = JSON.parse(business.phone_type);
-          phoneType = parsedType || 'Unknown';
-        } else {
-          phoneType = business.phone_type || 'Unknown';
-        }
-      } catch (e) {
-        phoneType = business.phone_type || 'Unknown';
-      }
-    }
-
-    // Format card content
     card.innerHTML = `
       <div class="card-body">
         <h5 class="card-title">${business.business_name}</h5>
         <p class="card-text">
-          <span class="badge ${business.rating >= 4 ? 'bg-success' : business.rating >= 3 ? 'bg-warning' : 'bg-danger'}">
-            ${business.rating || 'No rating'} ⭐ (${business.reviews || 0} reviews)
-          </span>
+          <small>${business.city || ''}, ${business.state || ''}</small><br>
+          <small>Phone: ${business.phone || 'N/A'}</small><br>
+          <small>Rating: ${business.rating || 'N/A'} (${business.reviews || '0'} reviews)</small>
         </p>
-        <p><strong>Phone:</strong> ${business.phone || 'N/A'} <span class="badge bg-info">${phoneType}</span></p>
-        <p><strong>Location:</strong> ${business.city || ''}, ${business.state || ''}</p>
-        <button class="btn btn-sm btn-primary view-details" data-id="${business.id}">View Details</button>
+        <button class="btn btn-sm btn-primary view-details-btn" data-business-id="${business.id}">View Details</button>
       </div>
     `;
-
     container.appendChild(card);
-
-    // Add event listener to view details button
-    card.querySelector('.view-details').addEventListener('click', function(e) {
-      e.stopPropagation(); // Prevent card click event
-      const businessId = this.getAttribute('data-id');
-      showBusinessDetails(businessId);
+  });
+  
+  // Add event listeners to all view details buttons in this container
+  container.querySelectorAll('.view-details-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const businessId = this.getAttribute('data-business-id');
+      selectBusiness(businessId);
     });
   });
 }
 
-// Load and display business details
-function showBusinessDetails(businessId) {
-  // Create modal if it doesn't exist
-  if (!document.getElementById('businessDetailsModal')) {
-    const modalHTML = `
-      <div class="modal fade" id="businessDetailsModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Business Details</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="businessDetailsContent">
-              <div class="row">
-                <div class="col-md-8" id="businessInfo">
-                  <!-- Business details will be loaded here -->
-                </div>
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="form-label">Move to Stage:</label>
-                    <select id="stagePicker" class="form-select">
-                      <option value="website created">Website Created</option>
-                      <option value="website sent">Website Sent</option>
-                      <option value="website viewed">Website Viewed</option>
-                    </select>
-                  </div>
-                  <button id="updateStageBtn" class="btn btn-primary">Update Stage</button>
+async function selectBusiness(id) {
+  currentBusinessId = id;
 
-                  <div class="mt-3">
-                    <label class="form-label">Notes:</label>
-                    <textarea id="businessNotes" class="form-control" rows="4"></textarea>
-                  </div>
-                </div>
-              </div>
+  try {
+    // Make sure modal element exists
+    const modalElement = document.getElementById('businessModal');
+    if (!modalElement) {
+      console.error('Business modal element not found');
+      return;
+    }
 
-              <div class="mt-4">
-                <h6>Pipeline History</h6>
-                <div id="pipelineHistory">
-                  <!-- Pipeline history will be loaded here -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+    // Initialize modal if not already done
+    if (!businessModal) {
+      businessModal = new bootstrap.Modal(modalElement);
+    }
 
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-  }
+    // Fetch business details
+    const businessResponse = await fetch(`/api/businesses/${id}`);
+    const business = await businessResponse.json();
 
-  // Fetch business details
-  fetch(`/api/businesses/${businessId}`)
-    .then(response => response.json())
-    .then(business => {
-      // Format business details
-      let phoneType = '';
-      if (business.scraped_data && business.scraped_data.phone_type) {
-        phoneType = business.scraped_data.phone_type;
+    // Fetch pipeline data
+    const pipelineResponse = await fetch(`/api/pipeline/${id}`);
+    const pipeline = await pipelineResponse.json();
+    
+    // Ensure all DOM elements exist before trying to update them
+    const elements = {
+      businessName: document.getElementById('businessName'),
+      businessPhone: document.getElementById('businessPhone'),
+      businessEmail: document.getElementById('businessEmail'),
+      businessAddress: document.getElementById('businessAddress'),
+      businessRating: document.getElementById('businessRating'),
+      businessReviews: document.getElementById('businessReviews'),
+      businessPhoneType: document.getElementById('businessPhoneType')
+    };
+    
+    // Check if all elements exist
+    for (const [key, element] of Object.entries(elements)) {
+      if (!element) {
+        console.error(`Element '${key}' not found`);
+        return;
+      }
+    }
+
+    // Update the UI with business details
+    elements.businessName.textContent = business.business_name;
+    elements.businessPhone.textContent = business.phone || 'Not available';
+    elements.businessEmail.textContent = business.email || 'Not available';
+    elements.businessAddress.textContent = business.full_address ||
+      `${business.street || ''} ${business.city || ''}, ${business.state || ''} ${business.postal_code || ''}`;
+    elements.businessRating.textContent = business.rating || 'N/A';
+    elements.businessReviews.textContent = business.reviews || '0';
+    
+    // Handle phone type if it exists (from scraped_data)
+    const phoneTypeElement = elements.businessPhoneType;
+    if (phoneTypeElement) {
+      try {
+        const phoneType = business.phone_type ? JSON.parse(business.phone_type) : null;
+        phoneTypeElement.textContent = phoneType || 'Not specified';
+      } catch (e) {
+        phoneTypeElement.textContent = business.phone_type || 'Not specified';
+      }
+    }
+
+    // Display business hours
+    const hoursContainer = document.getElementById('businessHours');
+    hoursContainer.innerHTML = '';
+
+    if (business.working_hours && Object.keys(JSON.parse(business.working_hours)).length > 0) {
+      const hours = JSON.parse(business.working_hours);
+      const daysList = document.createElement('ul');
+      daysList.className = 'list-group list-group-flush';
+
+      for (const [day, time] of Object.entries(hours)) {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.textContent = `${day}: ${time}`;
+        daysList.appendChild(listItem);
       }
 
-      const infoHTML = `
-        <h4>${business.business_name}</h4>
-        <p><span class="badge ${business.rating >= 4 ? 'bg-success' : business.rating >= 3 ? 'bg-warning' : 'bg-danger'}">
-          ${business.rating || 'No rating'} ⭐ (${business.reviews || 0} reviews)
-        </span></p>
+      hoursContainer.appendChild(daysList);
+    } else {
+      hoursContainer.textContent = 'Hours not available';
+    }
 
-        <div class="row mb-2">
-          <div class="col-md-4 info-label">Phone:</div>
-          <div class="col-md-8">${business.phone || 'N/A'} <span class="badge bg-info">${phoneType}</span></div>
+    // Display pipeline status
+    const pipelineContainer = document.getElementById('pipelineStatus');
+    pipelineContainer.innerHTML = '';
+
+    if (pipeline.length > 0) {
+      const latestStage = pipeline[0].stage;
+      const stageDate = new Date(pipeline[0].stage_date).toLocaleDateString();
+
+      pipelineContainer.innerHTML = `
+        <p><strong>Current Stage:</strong> ${latestStage}</p>
+        <p><strong>Last Updated:</strong> ${stageDate}</p>
+        <div class="mt-3">
+          <select id="pipelineStageSelect" class="form-select">
+            <option value="">-- Select Next Stage --</option>
+            <option value="website created" ${latestStage === 'website created' ? 'selected' : ''}>Website Created</option>
+            <option value="website sent" ${latestStage === 'website sent' ? 'selected' : ''}>Website Sent</option>
+            <option value="website viewed" ${latestStage === 'website viewed' ? 'selected' : ''}>Website Viewed</option>
+          </select>
+          <textarea id="pipelineNotes" class="form-control mt-2" placeholder="Notes (optional)"></textarea>
+          <button id="updatePipelineBtn" class="btn btn-primary mt-2">Move to Selected Stage</button>
         </div>
-
-        <div class="row mb-2">
-          <div class="col-md-4 info-label">Email:</div>
-          <div class="col-md-8">${business.email || 'N/A'}</div>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col-md-4 info-label">Address:</div>
-          <div class="col-md-8">${business.full_address || 'N/A'}</div>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col-md-4 info-label">Website:</div>
-          <div class="col-md-8">${business.scraped_data?.website || 'N/A'}</div>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col-md-4 info-label">Description:</div>
-          <div class="col-md-8">${business.description || 'N/A'}</div>
+        <div class="mt-3">
+          <h6>Pipeline History</h6>
+          <ul class="list-group">
+            ${pipeline.map(entry => `
+              <li class="list-group-item">
+                <small>${new Date(entry.stage_date).toLocaleString()}</small>
+                <strong>${entry.stage}</strong>
+                ${entry.notes ? `<p class="mb-0 text-muted">${entry.notes}</p>` : ''}
+              </li>
+            `).join('')}
+          </ul>
         </div>
       `;
+    } else {
+      pipelineContainer.textContent = 'No pipeline data available';
+    }
 
-      document.getElementById('businessInfo').innerHTML = infoHTML;
+    // Display social links
+    const socialContainer = document.getElementById('socialLinks');
+    socialContainer.innerHTML = '';
 
-      // Load pipeline history
-      fetch(`/api/pipeline/${businessId}`)
-        .then(response => response.json())
-        .then(pipelineEntries => {
-          const historyHTML = pipelineEntries.length > 0 
-            ? `<ul class="list-group">
-                ${pipelineEntries.map(entry => `
-                  <li class="list-group-item">
-                    <div class="d-flex justify-content-between">
-                      <span class="badge bg-primary">${entry.stage}</span>
-                      <small>${new Date(entry.stage_date).toLocaleString()}</small>
-                    </div>
-                    ${entry.notes ? `<p class="mb-0 mt-2">${entry.notes}</p>` : ''}
-                  </li>
-                `).join('')}
-              </ul>`
-            : '<p>No pipeline history yet.</p>';
+    if (business.social_links && Object.keys(JSON.parse(business.social_links)).length > 0) {
+      const socialLinks = JSON.parse(business.social_links);
+      const linksList = document.createElement('div');
+      linksList.className = 'd-flex flex-wrap gap-2';
 
-          document.getElementById('pipelineHistory').innerHTML = historyHTML;
-        });
-
-      // Handle stage update
-      document.getElementById('updateStageBtn').onclick = function() {
-        const stage = document.getElementById('stagePicker').value;
-        const notes = document.getElementById('businessNotes').value;
-
-        fetch(`/api/pipeline/${businessId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ stage, notes })
-        })
-        .then(response => response.json())
-        .then(() => {
-          // Reload businesses and close modal
-          loadBusinesses();
-
-          // Using Bootstrap 5 modal API
-          const modal = bootstrap.Modal.getInstance(document.getElementById('businessDetailsModal'));
-          modal.hide();
-        })
-        .catch(error => {
-          console.error('Error updating stage:', error);
-          alert('Failed to update stage. Please try again.');
-        });
-      };
-
-      // Show modal using Bootstrap 5 modal API
-      const modal = new bootstrap.Modal(document.getElementById('businessDetailsModal'));
-      modal.show();
-    })
-    .catch(error => {
-      console.error('Error fetching business details:', error);
-      alert('Failed to load business details. Please try again.');
-    });
-}
-
-// Load states for filtering
-function loadStates() {
-  fetch('/api/states')
-    .then(response => response.json())
-    .then(states => {
-      const stateFilter = document.getElementById('stateFilter');
-
-      // Clear existing options except the first one (All States)
-      while (stateFilter.options.length > 1) {
-        stateFilter.remove(1);
+      for (const [platform, url] of Object.entries(socialLinks)) {
+        if (url) {
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.className = 'btn btn-sm btn-outline-primary';
+          link.textContent = platform.charAt(0).toUpperCase() + platform.slice(1);
+          linksList.appendChild(link);
+        }
       }
 
-      // Add state options
-      states.forEach(state => {
-        const option = document.createElement('option');
-        option.value = state;
-        option.textContent = state;
-        stateFilter.appendChild(option);
+      socialContainer.appendChild(linksList);
+    } else {
+      socialContainer.textContent = 'No social links available';
+    }
+
+    // Show the modal
+    businessModal.show();
+    
+    // Add event listener for pipeline stage update button
+    const updatePipelineBtn = document.getElementById('updatePipelineBtn');
+    if (updatePipelineBtn) {
+      updatePipelineBtn.addEventListener('click', function() {
+        updatePipelineStage();
       });
-    })
-    .catch(error => {
-      console.error('Error loading states:', error);
-    });
+    }
+
+    // Set up view recording
+    recordWebsiteView();
+  } catch (error) {
+    console.error('Error fetching business details:', error);
+  }
 }
 
-// Clear filters
-function clearFilters() {
-  document.getElementById('stateFilter').value = '';
-  loadBusinesses();
+async function updatePipelineStage() {
+  const stageSelect = document.getElementById('pipelineStageSelect');
+  if (!stageSelect) {
+    console.error('Pipeline stage select element not found');
+    return;
+  }
+  
+  const stage = stageSelect.value;
+  const notesElement = document.getElementById('pipelineNotes');
+  const notes = notesElement ? notesElement.value : '';
+
+  if (!stage) {
+    alert('Please select a pipeline stage');
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/pipeline/${currentBusinessId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ stage, notes })
+    });
+
+    if (response.ok) {
+      // Show success message
+      alert(`Successfully moved business to "${stage}" stage`);
+      
+      // Refresh the business pipelines
+      loadBusinessesByPipeline();
+      
+      // Close the modal
+      if (businessModal) {
+        businessModal.hide();
+      }
+    } else {
+      const errorData = await response.json();
+      console.error('Error updating pipeline stage:', errorData.error || response.statusText);
+      alert('Failed to update pipeline stage. See console for details.');
+    }
+  } catch (error) {
+    console.error('Error updating pipeline stage:', error);
+    alert('Failed to update pipeline stage. See console for details.');
+  }
+}
+
+async function recordWebsiteView() {
+  if (!currentBusinessId) return;
+
+  try {
+    const response = await fetch(`/api/website-view/${currentBusinessId}`, {
+      method: 'POST'
+    });
+    if (!response.ok) {
+      console.error('Error recording website view:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error recording website view:', error);
+  }
 }
