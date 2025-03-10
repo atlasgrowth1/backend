@@ -99,6 +99,7 @@ function populateStageColumn(containerId, businesses) {
     const card = document.createElement('div');
     card.className = 'card business-card mb-2';
     card.setAttribute('data-business-id', business.id);
+    card.style.cursor = 'pointer';
     card.innerHTML = `
       <div class="card-body">
         <h5 class="card-title">${business.business_name || 'Unnamed Business'}</h5>
@@ -109,15 +110,14 @@ function populateStageColumn(containerId, businesses) {
         </p>
       </div>
     `;
-    container.appendChild(card);
-  });
-  
-  // Add event listeners to the entire card
-  container.querySelectorAll('.business-card').forEach(card => {
+    
+    // Add click event directly to the card when creating it
     card.addEventListener('click', function() {
-      const businessId = this.getAttribute('data-business-id');
-      selectBusiness(businessId);
+      console.log('Card clicked, business ID:', business.id);
+      selectBusiness(business.id);
     });
+    
+    container.appendChild(card);
   });
 }
 
@@ -135,8 +135,11 @@ async function selectBusiness(id) {
     }
 
     // Initialize modal if not already done
-    if (!businessModal) {
-      businessModal = new bootstrap.Modal(modalElement);
+    if (typeof bootstrap !== 'undefined') {
+      businessModal = businessModal || new bootstrap.Modal(modalElement);
+    } else {
+      console.error('Bootstrap not loaded');
+      return;
     }
 
     // Fetch business details
