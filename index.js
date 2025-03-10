@@ -314,17 +314,28 @@ app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], async (req, res) => 
     
     // Direct query for HVAC business type
     const queryResult = await db.query(
-      'SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type = $2',
+      'SELECT * FROM businesses WHERE LOWER(website_key) = LOWER($1) AND business_type ILIKE $2',
       [businessKey, 'hvac']
     );
     console.log(`Query results: ${queryResult.rows.length} rows found`);
     
     if (queryResult.rows.length === 0) {
       // Try to find the business with any type for debugging
+      console.log(`No business found with key=${businessKey} and type='hvac', checking for any business with this key`);
       const altResult = await db.query(
         'SELECT id, business_name, business_type, website_key FROM businesses WHERE LOWER(website_key) = LOWER($1)',
         [businessKey]
       );
+      
+      // Add additional debugging for alternate result
+      if (altResult.rows.length > 0) {
+        console.log(`Business found with details:`, {
+          id: altResult.rows[0].id,
+          name: altResult.rows[0].business_name,
+          actualType: altResult.rows[0].business_type,
+          key: altResult.rows[0].website_key
+        });
+      }
       
       if (altResult.rows.length > 0) {
         console.log(`Found business with key=${businessKey} but wrong type:`, altResult.rows[0]);
