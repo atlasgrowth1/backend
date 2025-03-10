@@ -413,7 +413,12 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     }
 
     // Get business data - remove 's' from type for other business types
-    const businessTypeForQuery = businessType.slice(0, -1);
+    let businessTypeForQuery = businessType.slice(0, -1);
+    
+    // Additional handling for electricians - check for both capitalized and lowercase
+    if (businessTypeForQuery === 'electrician') {
+      // We'll handle this in the SQL query with LOWER()
+    }
 
     console.log(`Looking for business with key=${businessKey}, type=${businessTypeForQuery}, page=${page}`);
 
@@ -432,7 +437,31 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
 
       if (altResult.rows.length > 0) {
         console.log(`Found business with key=${businessKey} but wrong type:`, altResult.rows[0]);
-        return res.status(404).send(`Business found with key: ${businessKey} but has type: "${altResult.rows[0].business_type}" instead of expected: "${businessTypeForQuery}"`);
+        
+        // Record this view attempt 
+        try {
+          await db.query(
+            `INSERT INTO website_pipeline (business_id, template_id, stage, notes)
+             VALUES ($1, $2, $3, $4)`,
+            [altResult.rows[0].id, 'basic_template', 'website viewed', 
+             JSON.stringify({
+               error: "Business type mismatch",
+               expectedType: businessTypeForQuery,
+               actualType: altResult.rows[0].business_type,
+               timestamp: new Date().toISOString()
+             })
+            ]
+          );
+        } catch (e) {
+          console.error("Failed to record view attempt:", e);
+        }
+        
+        return res.status(404).send(`<html><head><title>Business Type Mismatch</title>
+          <style>body{font-family:Arial,sans-serif;margin:40px;line-height:1.6;}</style></head>
+          <body><h1>Business Found: ${altResult.rows[0].business_name}</h1>
+          <p>This business is registered as type: "${altResult.rows[0].business_type}" instead of "${businessTypeForQuery}".</p>
+          <p>Your visit has been recorded. We'll work on fixing this issue.</p>
+          <p><a href="/">Return to homepage</a></p></body></html>`);
       } else {
         console.log(`No business found with key=${businessKey}`);
         return res.status(404).send(`Business not found with key: ${businessKey}`);
@@ -441,9 +470,35 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
 
     const business = queryResult.rows[0];
 
-    // Determine template paths
-    const layoutPath = path.join(__dirname, 'templates', businessTypeForQuery, 'shared', 'layout.html');
-    const contentPath = path.join(__dirname, 'templates', businessTypeForQuery, 'pages', `${page}.html`);
+    // Check if we need to use a fallback template for this business type
+    let templateDir = businessTypeForQuery;
+    let templatePath = path.join(__dirname, 'templates', templateDir);
+    
+    // Special case for electrician - fallback to single file if directory not found
+    if (businessTypeForQuery === 'electrician' && !fs.existsSync(templatePath).catch(() => false)) {
+      // Use the electrician.html template for all pages
+      const legacyTemplatePath = path.join(__dirname, 'templates', 'electrician.html');
+      
+      try {
+        const template = await fs.readFile(legacyTemplatePath, 'utf8');
+        
+        // Replace placeholders directly
+        let renderedTemplate = template;
+        for (const [placeholder, value] of Object.entries(replacements)) {
+          renderedTemplate = renderedTemplate.replace(new RegExp(placeholder, 'g'), value);
+        }
+        
+        // Send the populated template
+        return res.send(renderedTemplate);
+      } catch (err) {
+        console.error('Template not found:', err);
+        return res.status(404).send(`Electrician template not found. Please check if electrician.html exists.`);
+      }
+    }
+    
+    // Normal path for structured templates
+    const layoutPath = path.join(__dirname, 'templates', templateDir, 'shared', 'layout.html');
+    const contentPath = path.join(__dirname, 'templates', templateDir, 'pages', `${page}.html`);
 
     // Read the template files
     let layoutTemplate, contentTemplate;
