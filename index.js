@@ -303,15 +303,15 @@ app.get('/api/pipeline/:businessId', async (req, res) => {
 });
 
 // HVAC-specific routes
-app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], async (req, res) => {
+app.get(['/hvacs/:businessKey', '/hvacs/:businessKey/:page'], async (req, res) => {
   try {
     let { businessKey, page } = req.params;
 
     // Default page is home
     page = page ? page.toLowerCase() : 'home';
 
-    // Valid pages for HVAC websites
-    const validPages = ['home', 'residential', 'commercial', 'services', 'contact', 'about', 'financing', 'emergency'];
+    // Valid pages
+    const validPages = ['home', 'residential', 'commercial', 'industrial', 'contact'];
 
     if (!validPages.includes(page)) {
       return res.status(404).send(`Invalid page: ${page}. Valid pages are: ${validPages.join(', ')}`);
@@ -328,7 +328,7 @@ app.get(['/hvac/:businessKey', '/hvac/:businessKey/:page'], async (req, res) => 
 
     if (queryResult.rows.length === 0) {
       // Try to find the business with any type for debugging
-      console.log(`No business found with key=${businessKey} and type 'hvac', checking for any business with this key`);
+      console.log(`No business found with key=${businessKey} and any HVAC-related type, checking for any business with this key`);
       const altResult = await db.query(
         'SELECT id, business_name, business_type, website_key FROM businesses WHERE LOWER(website_key) = LOWER($1)',
         [businessKey]
@@ -420,7 +420,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
 
     // Get business data - remove 's' from type for other business types
     let businessTypeForQuery = businessType.slice(0, -1);
-
+    
     // Additional handling for electricians - check for both capitalized and lowercase
     if (businessTypeForQuery === 'electrician') {
       // We'll handle this in the SQL query with LOWER()
@@ -443,7 +443,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
 
       if (altResult.rows.length > 0) {
         console.log(`Found business with key=${businessKey} but wrong type:`, altResult.rows[0]);
-
+        
         // Record this view attempt 
         try {
           await db.query(
@@ -461,7 +461,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
         } catch (e) {
           console.error("Failed to record view attempt:", e);
         }
-
+        
         return res.status(404).send(`<html><head><title>Business Type Mismatch</title>
           <style>body{font-family:Arial,sans-serif;margin:40px;line-height:1.6;}</style></head>
           <body><h1>Business Found: ${altResult.rows[0].business_name}</h1>
@@ -479,7 +479,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     // Check if we need to use a fallback template for this business type
     let templateDir = businessTypeForQuery;
     let templatePath = path.join(__dirname, 'templates', templateDir);
-
+    
     // Special case for electrician - fallback to single file if directory not found
     let dirExists = false;
     try {
@@ -488,14 +488,14 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     } catch (e) {
       dirExists = false;
     }
-
+    
     if (businessTypeForQuery === 'electrician' && !dirExists) {
       // Use the electrician.html template for all pages
       const legacyTemplatePath = path.join(__dirname, 'templates', 'electrician.html');
-
+      
       try {
         const template = await fs.readFile(legacyTemplatePath, 'utf8');
-
+        
         // Set page-specific variables for electrician
         const pageData = {
           currentPage: page,
@@ -507,7 +507,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
           isContact: page === 'contact',
           businessKey: business.website_key
         };
-
+        
         // Define all possible replacement fields for electrician
         const electricianReplacements = {
           '{{businessName}}': business.business_name || '',
@@ -524,13 +524,13 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
           '{{pageTitle}}': pageData.pageTitle,
           '{{businessKey}}': pageData.businessKey
         };
-
+        
         // Replace placeholders directly
         let renderedTemplate = template;
         for (const [placeholder, value] of Object.entries(electricianReplacements)) {
           renderedTemplate = renderedTemplate.replace(new RegExp(placeholder, 'g'), value);
         }
-
+        
         // Send the populated template
         return res.send(renderedTemplate);
       } catch (err) {
@@ -538,7 +538,7 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
         return res.status(404).send(`Electrician template not found. Please check if electrician.html exists.`);
       }
     }
-
+    
     // Normal path for structured templates
     const layoutPath = path.join(__dirname, 'templates', templateDir, 'shared', 'layout.html');
     const contentPath = path.join(__dirname, 'templates', templateDir, 'pages', `${page}.html`);
