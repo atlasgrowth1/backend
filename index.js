@@ -401,8 +401,14 @@ app.get(['/:businessType/:businessKey', '/:businessType/:businessKey/:page'], as
     page = page ? page.toLowerCase() : 'home';
 
     // Valid business types and pages
-    const validTypes = ['electricians', 'plumbers'];
+    const validTypes = ['electricians', 'plumbers', 'electrician'];
     const validPages = ['home', 'residential', 'commercial', 'industrial', 'contact'];
+
+    // If singular 'electrician' is used, redirect to plural form
+    if (businessType === 'electrician') {
+      const redirectPath = page ? `/electricians/${businessKey}/${page}` : `/electricians/${businessKey}`;
+      return res.redirect(301, redirectPath);
+    }
 
     if (!validTypes.includes(businessType)) {
       return res.status(404).send(`Invalid business type: ${businessType}. Valid types are: electricians, plumbers, hvac`);
