@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,21 +13,141 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      position: relative;
+    }
+    .bg-hero-pattern::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(75deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+      z-index: 1;
+    }
+    .bg-hero-pattern > div {
+      position: relative;
+      z-index: 2;
     }
     .home-hero {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80');
+      background-image: url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80');
     }
     .residential-hero {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80');
+      background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80');
     }
     .commercial-hero {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80');
+      background-image: url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80');
     }
     .industrial-hero {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1516937941344-00b4e0337589?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');
+      background-image: url('https://images.unsplash.com/photo-1516937941344-00b4e0337589?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');
     }
     .contact-hero {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1553152531-b98a2fc8d3bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');
+      background-image: url('https://images.unsplash.com/photo-1553152531-b98a2fc8d3bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');
+    }
+    
+    .service-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+      border-left-color: #1e40af;
+    }
+    
+    .call-btn {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .call-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.4s ease;
+      z-index: -1;
+    }
+    
+    .call-btn:hover::before {
+      left: 0;
+    }
+    
+    .cta-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: translateX(-100%);
+    }
+    
+    .cta-btn:hover::after {
+      animation: btn-shine 1.5s;
+    }
+    
+    @keyframes btn-shine {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+    
+    .rating-card {
+      transition: all 0.3s ease;
+    }
+    
+    .rating-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2);
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: #fff;
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .mobile-menu-slide {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .mobile-menu-slide.show {
+      transform: translateX(0);
+    }
+    
+    .social-icon {
+      transition: all 0.3s ease;
+    }
+    
+    .social-icon:hover {
+      transform: translateY(-3px) scale(1.1);
     }
   </style>
   <script>
@@ -177,44 +298,57 @@
     }
   </script>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 font-sans">
   <!-- Header -->
-  <header class="bg-blue-600 text-white sticky top-0 z-50 shadow-md">
+  <header class="bg-gradient-to-r from-blue-700 to-blue-900 text-white sticky top-0 z-50 shadow-lg">
     <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
-      <div class="text-center md:text-left mb-4 md:mb-0">
-        <a href="/electricians/{{businessKey}}" class="text-2xl font-bold hover:text-blue-100">{{businessName}}</a>
-        <p class="text-blue-100 text-sm">Professional Electrical Services</p>
+      <div class="text-center md:text-left mb-4 md:mb-0 flex items-center">
+        <i class="fas fa-bolt text-yellow-400 text-3xl mr-3"></i>
+        <div>
+          <a href="/electricians/{{businessKey}}" class="text-2xl font-bold hover:text-blue-100 transition">{{businessName}}</a>
+          <p class="text-blue-100 text-sm">Professional Electrical Services</p>
+        </div>
       </div>
       <nav class="hidden md:block">
-        <ul class="flex space-x-6">
-          <li><a href="/electricians/{{businessKey}}" onclick="trackPageNavigation('home')" class="hover:text-blue-200 transition {{#if isHome}}font-bold border-b-2 border-white pb-1{{/if}}">Home</a></li>
-          <li><a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="hover:text-blue-200 transition {{#if isResidential}}font-bold border-b-2 border-white pb-1{{/if}}">Residential</a></li>
-          <li><a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="hover:text-blue-200 transition {{#if isCommercial}}font-bold border-b-2 border-white pb-1{{/if}}">Commercial</a></li>
-          <li><a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="hover:text-blue-200 transition {{#if isIndustrial}}font-bold border-b-2 border-white pb-1{{/if}}">Industrial</a></li>
-          <li><a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="hover:text-blue-200 transition {{#if isContact}}font-bold border-b-2 border-white pb-1{{/if}}">Contact</a></li>
+        <ul class="flex space-x-8">
+          <li><a href="/electricians/{{businessKey}}" onclick="trackPageNavigation('home')" class="nav-link hover:text-blue-200 transition py-2 {{#if isHome}}font-bold border-b-2 border-yellow-400 pb-1{{/if}}">Home</a></li>
+          <li><a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="nav-link hover:text-blue-200 transition py-2 {{#if isResidential}}font-bold border-b-2 border-yellow-400 pb-1{{/if}}">Residential</a></li>
+          <li><a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="nav-link hover:text-blue-200 transition py-2 {{#if isCommercial}}font-bold border-b-2 border-yellow-400 pb-1{{/if}}">Commercial</a></li>
+          <li><a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="nav-link hover:text-blue-200 transition py-2 {{#if isIndustrial}}font-bold border-b-2 border-yellow-400 pb-1{{/if}}">Industrial</a></li>
+          <li><a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="nav-link hover:text-blue-200 transition py-2 {{#if isContact}}font-bold border-b-2 border-yellow-400 pb-1{{/if}}">Contact</a></li>
         </ul>
       </nav>
       <div class="hidden md:block">
-        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="inline-block bg-white text-blue-600 font-bold py-2 px-4 rounded-lg hover:bg-blue-50 transition">
+        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="call-btn inline-flex items-center justify-center bg-white text-blue-700 font-bold py-2 px-5 rounded-lg hover:bg-blue-50 transition duration-300 shadow-md">
           <i class="fas fa-phone-alt mr-2"></i>{{phone}}
         </a>
       </div>
       <!-- Mobile menu button -->
       <div class="md:hidden">
-        <button id="mobileMenuBtn" class="text-white focus:outline-none">
+        <button id="mobileMenuBtn" class="text-white focus:outline-none p-2 rounded-lg hover:bg-blue-800 transition">
           <i class="fas fa-bars text-2xl"></i>
         </button>
       </div>
     </div>
     <!-- Mobile menu -->
-    <div id="mobileMenu" class="md:hidden hidden bg-blue-700 pb-4 px-4">
+    <div id="mobileMenu" class="md:hidden hidden bg-blue-800 pb-4 px-4">
       <nav class="flex flex-col space-y-3 mt-2">
-        <a href="/electricians/{{businessKey}}" onclick="trackPageNavigation('home')" class="hover:text-blue-200 transition py-2 {{#if isHome}}font-bold border-l-4 border-white pl-2{{/if}}">Home</a>
-        <a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="hover:text-blue-200 transition py-2 {{#if isResidential}}font-bold border-l-4 border-white pl-2{{/if}}">Residential</a>
-        <a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="hover:text-blue-200 transition py-2 {{#if isCommercial}}font-bold border-l-4 border-white pl-2{{/if}}">Commercial</a>
-        <a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="hover:text-blue-200 transition py-2 {{#if isIndustrial}}font-bold border-l-4 border-white pl-2{{/if}}">Industrial</a>
-        <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="hover:text-blue-200 transition py-2 {{#if isContact}}font-bold border-l-4 border-white pl-2{{/if}}">Contact</a>
-        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-600 font-bold py-2 px-4 rounded-lg hover:bg-blue-50 transition text-center">
+        <a href="/electricians/{{businessKey}}" onclick="trackPageNavigation('home')" class="hover:bg-blue-700 transition py-3 px-4 rounded-lg {{#if isHome}}font-bold border-l-4 border-yellow-400 pl-4{{/if}}">
+          <i class="fas fa-home mr-2"></i> Home
+        </a>
+        <a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="hover:bg-blue-700 transition py-3 px-4 rounded-lg {{#if isResidential}}font-bold border-l-4 border-yellow-400 pl-4{{/if}}">
+          <i class="fas fa-house-user mr-2"></i> Residential
+        </a>
+        <a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="hover:bg-blue-700 transition py-3 px-4 rounded-lg {{#if isCommercial}}font-bold border-l-4 border-yellow-400 pl-4{{/if}}">
+          <i class="fas fa-building mr-2"></i> Commercial
+        </a>
+        <a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="hover:bg-blue-700 transition py-3 px-4 rounded-lg {{#if isIndustrial}}font-bold border-l-4 border-yellow-400 pl-4{{/if}}">
+          <i class="fas fa-industry mr-2"></i> Industrial
+        </a>
+        <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="hover:bg-blue-700 transition py-3 px-4 rounded-lg {{#if isContact}}font-bold border-l-4 border-yellow-400 pl-4{{/if}}">
+          <i class="fas fa-envelope mr-2"></i> Contact
+        </a>
+        <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-700 font-bold py-3 px-4 rounded-lg hover:bg-blue-50 transition text-center shadow-md mt-2">
           <i class="fas fa-phone-alt mr-2"></i>{{phone}}
         </a>
       </nav>
@@ -224,17 +358,18 @@
   <!-- Main Content -->
   <main>
     <!-- Hero Section -->
-    <section class="bg-hero-pattern home-hero text-white py-20 md:py-32">
+    <section class="bg-hero-pattern home-hero text-white py-24 md:py-36">
       <div class="container mx-auto px-4">
         <div class="max-w-3xl mx-auto text-center">
-          <h1 class="text-4xl md:text-5xl font-bold mb-4">Expert Electrical Services You Can Trust</h1>
-          <p class="text-xl mb-8">Licensed, insured, and highly skilled electricians serving {{city}}, {{state}} and surrounding areas.</p>
-          <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-yellow-400 text-blue-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-300 transition">
-              Request a Quote
+          <span class="bg-blue-700 text-white text-sm font-bold py-1 px-3 rounded-full mb-6 inline-block">Trusted Electrical Contractors</span>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Expert Electrical Services You Can Trust</h1>
+          <p class="text-xl mb-10 text-blue-50">Licensed, insured, and highly skilled electricians serving {{city}}, {{state}} and surrounding areas.</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-5">
+            <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="cta-btn bg-yellow-500 text-blue-900 font-bold py-4 px-8 rounded-lg hover:bg-yellow-400 transition shadow-lg transform hover:-translate-y-1">
+              <i class="fas fa-clipboard-list mr-2"></i> Request a Quote
             </a>
-            <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition">
-              <i class="fas fa-phone-alt mr-2"></i>Call Now
+            <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-700 font-bold py-4 px-8 rounded-lg hover:bg-blue-50 transition shadow-lg transform hover:-translate-y-1">
+              <i class="fas fa-phone-alt mr-2"></i> Call Now
             </a>
           </div>
         </div>
@@ -242,31 +377,35 @@
     </section>
     
     <!-- Rating Section -->
-    <section class="py-12 bg-blue-50">
+    <section class="py-16 bg-gradient-to-b from-blue-50 to-white">
       <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row justify-center items-center gap-8 text-center">
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <div class="text-yellow-400 text-2xl mb-2">
+          <div class="bg-white p-8 rounded-xl shadow-md rating-card flex-1 max-w-xs">
+            <div class="text-yellow-400 text-3xl mb-4 flex justify-center">
               <!-- Star Rating -->
               <span id="starRating">
-                <!-- Stars will be filled dynamically -->
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
               </span>
             </div>
-            <p class="font-bold text-xl">{{rating}} Rating</p>
-            <p class="text-gray-600">Based on {{reviews}} reviews</p>
+            <p class="font-bold text-2xl text-gray-800 mb-1">{{rating}} Rating</p>
+            <p class="text-gray-600">Based on {{reviews}} verified reviews</p>
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <div class="text-blue-600 text-2xl mb-2">
+          <div class="bg-white p-8 rounded-xl shadow-md rating-card flex-1 max-w-xs">
+            <div class="text-blue-600 text-3xl mb-4">
               <i class="fas fa-certificate"></i>
             </div>
-            <p class="font-bold text-xl">Licensed & Insured</p>
+            <p class="font-bold text-2xl text-gray-800 mb-1">Licensed & Insured</p>
             <p class="text-gray-600">Professional service guaranteed</p>
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <div class="text-blue-600 text-2xl mb-2">
+          <div class="bg-white p-8 rounded-xl shadow-md rating-card flex-1 max-w-xs">
+            <div class="text-blue-600 text-3xl mb-4">
               <i class="fas fa-bolt"></i>
             </div>
-            <p class="font-bold text-xl">Fast Response</p>
+            <p class="font-bold text-2xl text-gray-800 mb-1">24/7 Response</p>
             <p class="text-gray-600">Available for emergencies</p>
           </div>
         </div>
@@ -274,50 +413,179 @@
     </section>
     
     <!-- Services Section -->
-    <section id="services" class="py-16">
+    <section id="services" class="py-20">
       <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">Our Electrical Services</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <div class="text-blue-600 text-3xl mb-4">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Electrical Services</h2>
+          <div class="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Comprehensive electrical solutions for residential, commercial and industrial clients</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition service-card">
+            <div class="text-blue-600 text-4xl mb-6">
               <i class="fas fa-home"></i>
             </div>
-            <h3 class="font-bold text-xl mb-2">Residential Services</h3>
-            <p class="text-gray-600 mb-4">Complete electrical solutions for homeowners, from repairs to installations.</p>
-            <ul class="text-gray-600 space-y-2">
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Electrical repairs</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Lighting installation</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Panel upgrades</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Outlet installation</li>
+            <h3 class="font-bold text-2xl mb-4 text-gray-800">Residential Services</h3>
+            <p class="text-gray-600 mb-6">Complete electrical solutions for homeowners, from repairs to installations and upgrades.</p>
+            <ul class="text-gray-600 space-y-3 mb-8">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Electrical repairs and troubleshooting</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Lighting design and installation</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Panel upgrades and replacements</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Outlet and switch installation</span>
+              </li>
             </ul>
+            <a href="/electricians/{{businessKey}}/residential" class="inline-block text-blue-600 font-medium hover:text-blue-800 transition">
+              Learn more <i class="fas fa-arrow-right ml-1"></i>
+            </a>
           </div>
           
-          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <div class="text-blue-600 text-3xl mb-4">
+          <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition service-card">
+            <div class="text-blue-600 text-4xl mb-6">
               <i class="fas fa-building"></i>
             </div>
-            <h3 class="font-bold text-xl mb-2">Commercial Services</h3>
-            <p class="text-gray-600 mb-4">Reliable electrical services for businesses to minimize downtime.</p>
-            <ul class="text-gray-600 space-y-2">
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Commercial wiring</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Emergency repairs</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Code compliance</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Office lighting</li>
+            <h3 class="font-bold text-2xl mb-4 text-gray-800">Commercial Services</h3>
+            <p class="text-gray-600 mb-6">Reliable electrical services for businesses to minimize downtime and maximize efficiency.</p>
+            <ul class="text-gray-600 space-y-3 mb-8">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Commercial wiring and rewiring</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Emergency repair services</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Code compliance inspections</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Office lighting and power solutions</span>
+              </li>
             </ul>
+            <a href="/electricians/{{businessKey}}/commercial" class="inline-block text-blue-600 font-medium hover:text-blue-800 transition">
+              Learn more <i class="fas fa-arrow-right ml-1"></i>
+            </a>
           </div>
           
-          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <div class="text-blue-600 text-3xl mb-4">
+          <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition service-card">
+            <div class="text-blue-600 text-4xl mb-6">
               <i class="fas fa-tools"></i>
             </div>
-            <h3 class="font-bold text-xl mb-2">Electrical Repairs</h3>
-            <p class="text-gray-600 mb-4">Fast, efficient repairs to resolve electrical issues.</p>
-            <ul class="text-gray-600 space-y-2">
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Circuit troubleshooting</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Outlet repairs</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Switch replacements</li>
-              <li><i class="fas fa-check text-green-500 mr-2"></i>Emergency services</li>
+            <h3 class="font-bold text-2xl mb-4 text-gray-800">Electrical Repairs</h3>
+            <p class="text-gray-600 mb-6">Fast, efficient repairs to resolve electrical issues and restore power safely.</p>
+            <ul class="text-gray-600 space-y-3 mb-8">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Circuit troubleshooting and repair</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Outlet and switch replacements</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>Fixture repairs and replacements</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                <span>24/7 emergency services</span>
+              </li>
             </ul>
+            <a href="/electricians/{{businessKey}}/contact" class="inline-block text-blue-600 font-medium hover:text-blue-800 transition">
+              Learn more <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mt-16 text-center">
+          <a href="/electricians/{{businessKey}}/contact" class="inline-flex items-center justify-center bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition shadow-md">
+            View All Services <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Why Choose Us Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose {{businessName}}</h2>
+            <div class="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
+            <p class="text-xl text-gray-600">We're committed to providing the highest quality electrical services</p>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div class="bg-white p-8 rounded-xl shadow-md flex items-start service-card">
+              <div class="bg-blue-100 rounded-full p-4 mr-5 text-blue-600 text-2xl flex-shrink-0">
+                <i class="fas fa-certificate"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-xl mb-3 text-gray-800">Licensed & Certified</h3>
+                <p class="text-gray-600">Our team consists of fully licensed electricians with years of experience and continuous training.</p>
+              </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-md flex items-start service-card">
+              <div class="bg-blue-100 rounded-full p-4 mr-5 text-blue-600 text-2xl flex-shrink-0">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-xl mb-3 text-gray-800">Fast Response</h3>
+                <p class="text-gray-600">We understand that electrical issues can be urgent, so we prioritize quick response times.</p>
+              </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-md flex items-start service-card">
+              <div class="bg-blue-100 rounded-full p-4 mr-5 text-blue-600 text-2xl flex-shrink-0">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-xl mb-3 text-gray-800">Safety First</h3>
+                <p class="text-gray-600">We follow all safety protocols and code requirements to ensure your electrical systems are safe.</p>
+              </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-md flex items-start service-card">
+              <div class="bg-blue-100 rounded-full p-4 mr-5 text-blue-600 text-2xl flex-shrink-0">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-xl mb-3 text-gray-800">Transparent Pricing</h3>
+                <p class="text-gray-600">We provide upfront, honest pricing with no hidden fees or surprise charges.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-16 bg-blue-700 text-white">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl font-bold mb-6">Ready to Get Started?</h2>
+          <p class="text-xl text-blue-100 mb-8">Contact us today for a free estimate on your electrical project.</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-5">
+            <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="bg-white text-blue-700 font-bold py-4 px-8 rounded-lg hover:bg-blue-50 transition shadow-lg flex items-center justify-center">
+              <i class="fas fa-phone-alt mr-2"></i> Call: {{phone}}
+            </a>
+            <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="bg-yellow-500 text-blue-900 font-bold py-4 px-8 rounded-lg hover:bg-yellow-400 transition shadow-lg flex items-center justify-center">
+              <i class="fas fa-envelope mr-2"></i> Contact Us
+            </a>
           </div>
         </div>
       </div>
@@ -325,57 +593,108 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-900 text-white py-10">
+  <footer class="bg-gray-900 text-white py-16">
     <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between mb-8">
-        <div class="mb-6 md:mb-0">
-          <h3 class="text-xl font-bold mb-4">{{businessName}}</h3>
-          <p class="max-w-xs text-gray-400">Professional electrical services for residential, commercial, and industrial properties in {{city}}, {{state}} and surrounding areas.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+        <div>
+          <div class="flex items-center mb-6">
+            <i class="fas fa-bolt text-yellow-400 text-3xl mr-3"></i>
+            <h3 class="text-2xl font-bold">{{businessName}}</h3>
+          </div>
+          <p class="text-gray-400 mb-6">Professional electrical services for residential, commercial, and industrial properties in {{city}}, {{state}} and surrounding areas.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="social-icon text-2xl text-gray-400 hover:text-blue-400"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-icon text-2xl text-gray-400 hover:text-pink-400"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon text-2xl text-gray-400 hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon text-2xl text-gray-400 hover:text-red-400"><i class="fab fa-youtube"></i></a>
+          </div>
         </div>
         
-        <div class="mb-6 md:mb-0">
-          <h4 class="font-bold mb-4">Our Services</h4>
-          <ul class="space-y-2">
-            <li><a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="text-gray-400 hover:text-white transition">Residential</a></li>
-            <li><a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="text-gray-400 hover:text-white transition">Commercial</a></li>
-            <li><a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="text-gray-400 hover:text-white transition">Industrial</a></li>
-          </ul>
-        </div>
-        
-        <div class="mb-6 md:mb-0">
-          <h4 class="font-bold mb-4">Contact</h4>
-          <ul class="space-y-2">
-            <li class="flex items-center">
-              <i class="fas fa-map-marker-alt mr-2 text-blue-400"></i>
-              <span>{{city}}, {{state}}</span>
+        <div>
+          <h4 class="text-xl font-bold mb-6 border-b border-gray-700 pb-2">Our Services</h4>
+          <ul class="space-y-3">
+            <li>
+              <a href="/electricians/{{businessKey}}/residential" onclick="trackPageNavigation('residential')" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> Residential
+              </a>
             </li>
-            <li class="flex items-center">
-              <i class="fas fa-phone mr-2 text-blue-400"></i>
-              <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="hover:text-blue-300">{{phone}}</a>
+            <li>
+              <a href="/electricians/{{businessKey}}/commercial" onclick="trackPageNavigation('commercial')" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> Commercial
+              </a>
             </li>
-            <li class="flex items-center">
-              <i class="fas fa-envelope mr-2 text-blue-400"></i>
-              <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="hover:text-blue-300">{{email}}</a>
+            <li>
+              <a href="/electricians/{{businessKey}}/industrial" onclick="trackPageNavigation('industrial')" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> Industrial
+              </a>
+            </li>
+            <li>
+              <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> Emergency Services
+              </a>
             </li>
           </ul>
         </div>
         
         <div>
-          <h4 class="font-bold mb-4">Connect With Us</h4>
-          <div class="flex space-x-4" id="socialIcons">
-            <!-- Social icons will be dynamically generated -->
-            <a href="#" onclick="trackContactClick('facebook')" class="text-2xl hover:text-blue-400 transition"><i class="fab fa-facebook"></i></a>
-            <a href="#" onclick="trackContactClick('instagram')" class="text-2xl hover:text-pink-400 transition"><i class="fab fa-instagram"></i></a>
-            <a href="#" onclick="trackContactClick('twitter')" class="text-2xl hover:text-blue-400 transition"><i class="fab fa-twitter"></i></a>
-          </div>
+          <h4 class="text-xl font-bold mb-6 border-b border-gray-700 pb-2">Quick Links</h4>
+          <ul class="space-y-3">
+            <li>
+              <a href="/electricians/{{businessKey}}" onclick="trackPageNavigation('home')" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> Home
+              </a>
+            </li>
+            <li>
+              <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('about')" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> About Us
+              </a>
+            </li>
+            <li>
+              <a href="#services" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> Services
+              </a>
+            </li>
+            <li>
+              <a href="/electricians/{{businessKey}}/contact" onclick="trackPageNavigation('contact')" class="text-gray-400 hover:text-white transition flex items-center">
+                <i class="fas fa-angle-right mr-2 text-blue-400"></i> Contact
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-xl font-bold mb-6 border-b border-gray-700 pb-2">Contact</h4>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3 text-blue-400"></i>
+              <span>{{city}}, {{state}}</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone mr-3 text-blue-400"></i>
+              <a href="tel:{{phone}}" onclick="trackContactClick('phone')" class="hover:text-blue-300">{{phone}}</a>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-3 text-blue-400"></i>
+              <a href="mailto:{{email}}" onclick="trackContactClick('email')" class="hover:text-blue-300">{{email}}</a>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-clock mr-3 text-blue-400"></i>
+              <span>Mon-Fri: 8am-6pm</span>
+            </li>
+          </ul>
         </div>
       </div>
       
       <div class="pt-8 border-t border-gray-800 text-center text-gray-500">
-        <p>&copy; <span id="currentYear"></span> {{businessName}}. All rights reserved.</p>
+        <p>&copy; <span id="currentYear"></span> {{businessName}}. All rights reserved. Licensed and Insured Electrical Contractor.</p>
       </div>
     </div>
   </footer>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-3 shadow-lg hidden hover:bg-blue-700 transition transform hover:scale-110">
+    <i class="fas fa-arrow-up"></i>
+  </button>
 
   <script>
     // Set current year in footer
@@ -385,6 +704,49 @@
     document.getElementById('mobileMenuBtn').addEventListener('click', function() {
       const mobileMenu = document.getElementById('mobileMenu');
       mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Back to top button
+    window.addEventListener('scroll', function() {
+      const backToTopBtn = document.getElementById('backToTop');
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.remove('hidden');
+      } else {
+        backToTopBtn.classList.add('hidden');
+      }
+    });
+    
+    document.getElementById('backToTop').addEventListener('click', function() {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+    
+    // Generate star rating based on rating value
+    const generateStars = () => {
+      const starRating = document.getElementById('starRating');
+      if (!starRating) return;
+      
+      const rating = parseFloat('{{rating}}') || 0;
+      let stars = '';
+      
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          // Full star
+          stars += '<i class="fas fa-star"></i>';
+        } else if (i - 0.5 <= rating) {
+          // Half star
+          stars += '<i class="fas fa-star-half-alt"></i>';
+        } else {
+          // Empty star
+          stars += '<i class="far fa-star"></i>';
+        }
+      }
+      
+      starRating.innerHTML = stars;
+    };
+    
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      generateStars();
     });
   </script>
 </body>
