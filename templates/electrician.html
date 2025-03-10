@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{businessName}} - Professional Electrician</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // This will be replaced by the server with actual business data
+    const BUSINESS_DATA = {{businessData}};
+
+    // Render the website based on BUSINESS_DATA
+    document.addEventListener('DOMContentLoaded', function() {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <nav class="bg-blue-700 text-white shadow-lg">
+          <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="text-xl font-bold">${BUSINESS_DATA.business_name}</div>
+            <div class="hidden md:flex space-x-8">
+              <a href="#services" class="hover:text-blue-200">Services</a>
+              <a href="#about" class="hover:text-blue-200">About Us</a>
+              <a href="#contact" class="hover:text-blue-200">Contact</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="bg-blue-600 text-white py-16">
+          <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+              Professional Electrical Services in ${BUSINESS_DATA.city || 'Your Area'}, ${BUSINESS_DATA.state || ''}
+            </h1>
+            <p class="text-xl mb-6">Licensed, insured electricians ready to solve your electrical problems</p>
+            <a href="#contact" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg inline-block">
+              Get a Free Quote
+            </a>
+          </div>
+        </div>
+
+        <!-- Services Section -->
+        <div id="services" class="py-16 bg-white">
+          <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Our Electrical Services</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+              <div class="bg-gray-50 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-2">Electrical Repairs</h3>
+                <p class="text-gray-600">Expert troubleshooting and repair of electrical issues, from outlets to breaker panels.</p>
+              </div>
+              <div class="bg-gray-50 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-2">Lighting Installation</h3>
+                <p class="text-gray-600">Indoor and outdoor lighting solutions, including energy-efficient LED upgrades.</p>
+              </div>
+              <div class="bg-gray-50 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-2">Panel Upgrades</h3>
+                <p class="text-gray-600">Upgrade your electrical panel to handle modern power demands safely and efficiently.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Section -->
+        <div id="about" class="py-16 bg-gray-100">
+          <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">About Us</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto">
+              ${BUSINESS_DATA.business_name} is a trusted electrical contractor serving ${BUSINESS_DATA.city || 'the local area'} and surrounding communities. 
+              With years of experience, we deliver reliable, professional service for all your electrical needs.
+            </p>
+          </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div id="contact" class="py-16 bg-white">
+          <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Contact Us</h2>
+            <div class="flex flex-col md:flex-row">
+              <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                <form class="bg-gray-50 rounded-lg shadow-md p-6">
+                  <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="name">Your Name</label>
+                    <input class="w-full px-4 py-2 border rounded-lg" type="text" id="name">
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="email">Email Address</label>
+                    <input class="w-full px-4 py-2 border rounded-lg" type="email" id="email">
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="message">Message</label>
+                    <textarea class="w-full px-4 py-2 border rounded-lg" id="message" rows="4"></textarea>
+                  </div>
+                  <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg">
+                    Send Message
+                  </button>
+                </form>
+              </div>
+              <div class="md:w-1/2 md:pl-8">
+                <div class="bg-gray-50 rounded-lg shadow-md p-6">
+                  <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
+                  <p class="mb-2"><strong>Phone:</strong> ${BUSINESS_DATA.phone || 'N/A'}</p>
+                  <p class="mb-2"><strong>Email:</strong> ${BUSINESS_DATA.email || 'N/A'}</p>
+                  <p class="mb-2"><strong>Address:</strong> ${BUSINESS_DATA.full_address || 'N/A'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+          <div class="container mx-auto px-4 text-center">
+            <p>&copy; ${new Date().getFullYear()} ${BUSINESS_DATA.business_name}. All rights reserved.</p>
+          </div>
+        </footer>
+      `;
+    });
+
+    // Tracking script
+    (function() {
+      const visitorId = localStorage.getItem('visitorId') || 
+        'v_' + Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('visitorId', visitorId);
+
+      // Track page view
+      fetch('/api/analytics/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessId: BUSINESS_DATA.id,
+          eventType: 'pageview',
+          pagePath: window.location.pathname,
+          visitorId,
+          referrer: document.referrer
+        })
+      }).catch(err => console.error('Tracking error:', err));
+
+      // Track exit
+      const startTime = Date.now();
+      window.addEventListener('beforeunload', () => {
+        const duration = Math.floor((Date.now() - startTime) / 1000);
+        navigator.sendBeacon('/api/analytics/track', JSON.stringify({
+          businessId: BUSINESS_DATA.id,
+          eventType: 'exit',
+          duration,
+          visitorId
+        }));
+      });
+    })();
+  </script>
+</body>
+</html>
