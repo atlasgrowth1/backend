@@ -139,10 +139,21 @@ async function selectBusiness(id) {
     }
 
     // Initialize modal if not already done
-    if (typeof bootstrap !== 'undefined') {
-      businessModal = businessModal || new bootstrap.Modal(modalElement);
-    } else {
-      console.error('Bootstrap not loaded');
+    try {
+      console.log('Bootstrap object:', typeof bootstrap, bootstrap);
+      console.log('Modal element:', modalElement);
+      
+      if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        businessModal = new bootstrap.Modal(modalElement);
+        console.log('Modal initialized successfully');
+      } else {
+        console.error('Bootstrap Modal not available:', bootstrap);
+        alert('Error: Bootstrap Modal not available. Please check the console for details.');
+        return;
+      }
+    } catch (error) {
+      console.error('Error initializing modal:', error);
+      alert('Error initializing modal. Please check the console for details.');
       return;
     }
 
